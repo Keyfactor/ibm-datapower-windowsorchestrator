@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API-Driver", "DataPower.API\API-Driver.csproj", "{6309EB13-EBB5-4A1D-BF40-CD97ACD27C4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPowerAnyAgent", "AnyAgent\DataPowerAnyAgent.csproj", "{7A68FF2A-DACD-4E5D-9DB9-BCBFCF179D43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6309EB13-EBB5-4A1D-BF40-CD97ACD27C4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6309EB13-EBB5-4A1D-BF40-CD97ACD27C4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6309EB13-EBB5-4A1D-BF40-CD97ACD27C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6309EB13-EBB5-4A1D-BF40-CD97ACD27C4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A68FF2A-DACD-4E5D-9DB9-BCBFCF179D43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A68FF2A-DACD-4E5D-9DB9-BCBFCF179D43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A68FF2A-DACD-4E5D-9DB9-BCBFCF179D43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A68FF2A-DACD-4E5D-9DB9-BCBFCF179D43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3D185E2E-8B17-45F9-A514-754BA0ECA07A}
+	EndGlobalSection
+EndGlobal

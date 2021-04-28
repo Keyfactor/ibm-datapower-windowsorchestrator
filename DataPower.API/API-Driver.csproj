@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6309EB13-EBB5-4A1D-BF40-CD97ACD27C4F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataPower.API</RootNamespace>
+    <AssemblyName>DataPowerAPI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="api\CertDetailValue.cs" />
+    <Compile Include="api\CertificateAddRequest.cs" />
+    <Compile Include="api\CertificateAddResponse.cs" />
+    <Compile Include="api\CertificateDetailsObject.cs" />
+    <Compile Include="api\CertificateObjectRequest.cs" />
+    <Compile Include="api\CertificateRequest.cs" />
+    <Compile Include="api\CertStoreCustom.cs" />
+    <Compile Include="api\CryptoCert.cs" />
+    <Compile Include="api\CryptoCertificate.cs" />
+    <Compile Include="api\CryptoCertificateAddRequest.cs" />
+    <Compile Include="api\CryptoCertificateUpdateRequest.cs" />
+    <Compile Include="api\CryptoKey.cs" />
+    <Compile Include="api\CryptoKeyAddRequest.cs" />
+    <Compile Include="api\CryptoKeyUpdateRequest.cs" />
+    <Compile Include="api\DeleteCertificateRequest.cs" />
+    <Compile Include="api\DeleteCryptoCertificateRequest.cs" />
+    <Compile Include="api\DeleteCryptoKeyRequest.cs" />
+    <Compile Include="api\NamePrefix.cs" />
+    <Compile Include="api\PublicFile.cs" />
+    <Compile Include="api\PublicFileStore.cs" />
+    <Compile Include="api\PublicFileStoreLocation.cs" />
+    <Compile Include="api\SaveConfigRequest.cs" />
+    <Compile Include="api\SaveConfigResponse.cs" />
+    <Compile Include="api\ViewCertificateDetailRequest.cs" />
+    <Compile Include="api\ViewCertificateDetailResponse.cs" />
+    <Compile Include="api\ViewCryptoCertificateSingleResponse.cs" />
+    <Compile Include="api\ViewCryptoCertificatesRequest.cs" />
+    <Compile Include="api\ViewCryptoCertificatesResponse.cs" />
+    <Compile Include="api\ViewCryptoKeysRequest.cs" />
+    <Compile Include="api\ViewCryptoKeyRequest.cs" />
+    <Compile Include="api\ViewCryptoKeysResponse.cs" />
+    <Compile Include="api\ViewPubCertificateDetailRequest.cs" />
+    <Compile Include="api\ViewPubCertificateDetailResponse.cs" />
+    <Compile Include="api\ViewPublicCertificatesRequest.cs" />
+    <Compile Include="api\ViewPublicCertificatesResponse.cs" />
+    <Compile Include="client\ApiClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="api\Request.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Common.Logging">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Common.Logging.Core">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Common.Logging.NLog41">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="CSS.Common">
+      <Version>1.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client">
+      <Version>5.2.6</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>4.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.1.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
