@@ -14,6 +14,7 @@ using Keyfactor.Platform.Extensions.Agents.Enums;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
+using CertificateRequest = DataPower.API.api.CertificateRequest;
 
 namespace DataPower
 {
