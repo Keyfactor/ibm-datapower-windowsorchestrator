@@ -1,0 +1,7 @@
+{
+    "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
+    "integration_type": "orchestrator",
+    "name": "IBM Datapower",
+    "status": "pilot",
+    "description": "The IBM DataPower Agent allows a user to inventory, and manage (both add and remove) from the IBM DataPower platform."
+}
