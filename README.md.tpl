@@ -1,7 +1,7 @@
-﻿# IBM Datapower
-## Orchestrator
+﻿# {{ name }}
+## {{ integration_type | capitalize }}
 
-The IBM DataPower Agent allows a user to inventory, and manage (both add and remove) from the IBM DataPower platform.
+{{ description }}
 
 <!-- add integration specific information below -->
 *** 
