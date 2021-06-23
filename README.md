@@ -1,8 +1,10 @@
-##**IBM DataPower Configuration**
-
-**Overview**
+﻿# IBM Datapower
+## Orchestrator
 
 The IBM DataPower Agent allows a user to inventory, and manage (both add and remove) from the IBM DataPower platform.
+
+<!-- add integration specific information below -->
+*** 
 
 **1) Create the new Certificate store Type for the New DataPower AnyAgent**
 
@@ -89,4 +91,7 @@ Navigate to Certificate Locations => Certificate Stores within Keyfactor Command
 4. **pubcert** - This will use the default domain in DataPower to manage and inventory **public certs** certs
 
 
+ ***
 
+### License
+[Apache](https://apache.org/licenses/LICENSE-2.0)
