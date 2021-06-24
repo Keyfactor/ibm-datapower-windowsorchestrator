@@ -4,5 +4,5 @@
     "name": "IBM Datapower",
     "status": "pilot",
     "link_github": false,
-    "description": "The IBM DataPower Agent allows a user to inventory, and manage (both add and remove) from the IBM DataPower platform."
+    "description": "The IBM DataPower Orchestrator allows for the management of certificates in the IBM Datapower platform. Inventory and Management functions are supported."
 }
