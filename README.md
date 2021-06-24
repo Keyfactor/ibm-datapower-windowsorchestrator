@@ -1,7 +1,7 @@
 ﻿# IBM Datapower
 ## Orchestrator
 
-The IBM DataPower Agent allows a user to inventory, and manage (both add and remove) from the IBM DataPower platform.
+The IBM DataPower Orchestrator allows for the management of certificates in the IBM Datapower platform. Inventory and Management functions are supported.
 
 <!-- add integration specific information below -->
 *** 
