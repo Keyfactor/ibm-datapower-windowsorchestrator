@@ -9,6 +9,7 @@
 **1) Create the new Certificate store Type for the New DataPower AnyAgent**
 
 In Keyfactor Command create a new Certificate Store Type similar to the one below:
+- NOTE: This orchestrator _does not_ actually support the Create function per the image below
 
 ![image.png](/Images/CertStoreTypes.png)
 
@@ -26,7 +27,7 @@ In Keyfactor Command create a new Certificate Store Type similar to the one belo
 - **Store PathType** – Freeform (user will enter the the location of the store).
 - **Private Keys** – Optional
 - **PFX Password Style** – Default
-- **Job Types** – Inventory, Add, Create and Remove are the 4 job types implemented by this AnyAgent
+- **Job Types** – Inventory, Add, and Remove are the 4 job types implemented by this AnyAgent
 - **Custom Parameters** :
  
     These are completely optional but if you want to use them to create a prefix to the certificate Objects, Keys and Files you can use them so your key will be named [prefix]Name.  If you choose to use them, they must exactly match what is shown below (all string values that are not required):
