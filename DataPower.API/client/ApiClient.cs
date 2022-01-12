@@ -17,6 +17,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using CSS.Common.Logging;
+using Keyfactor.Extensions.Pam.Utilities;
 using DataPower.API.api;
 using Newtonsoft.Json;
 using static System.Net.ServicePointManager;
@@ -40,7 +41,7 @@ namespace DataPower.API.client
         {
             BaseUrl = baseUrl;
             Username = user;
-            Password = pass;
+            Password = PamUtility.ResolvePassword(pass);
             Domain = domain.Trim();
         }
 
