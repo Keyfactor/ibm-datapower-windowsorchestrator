@@ -1,7 +1,8 @@
 {
     "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
-    "integration_type": "orchestrator",
+    "integration_type": "windows-orchestrator",
     "name": "IBM Datapower",
     "status": "pilot",
-    "description": "The IBM DataPower Agent allows a user to inventory, and manage (both add and remove) from the IBM DataPower platform."
+    "link_github": false,
+    "description": "The IBM DataPower Orchestrator allows for the management of certificates in the IBM Datapower platform. Inventory and Management functions are supported."
 }
