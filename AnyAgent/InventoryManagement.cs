@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Configuration;
 using System.Reflection;
 using CSS.Common.Logging;
@@ -19,6 +20,7 @@ using Keyfactor.Platform.Extensions.Agents;
 using Keyfactor.Platform.Extensions.Agents.Delegates;
 using Keyfactor.Platform.Extensions.Agents.Enums;
 using Keyfactor.Platform.Extensions.Agents.Interfaces;
+using Newtonsoft.Json;
 
 namespace DataPower
 {
@@ -40,14 +42,32 @@ namespace DataPower
 
         public string GetStoreType()
         {
-            return _appConfig.AppSettings.Settings["StoreType"].Value;
+            try
+            {
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                Logger.Trace($"StoreType {_appConfig.AppSettings.Settings["StoreType"].Value}");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+                return _appConfig.AppSettings.Settings["StoreType"].Value;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error Getting Store Type: {e.Message}");
+                throw;
+            }
         }
 
         public AnyJobCompleteInfo processJob(AnyJobConfigInfo initialConfig, SubmitInventoryUpdate submitInventory,
             SubmitEnrollmentRequest submitEnrollmentRequest, SubmitDiscoveryResults sdr)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+            Logger.Trace($"Any Job Config {JsonConvert.SerializeObject(initialConfig)}");
+            Logger.Trace($"submitEnrollmentRequest {JsonConvert.SerializeObject(submitEnrollmentRequest)}");
+
             var ci = Utility.ParseCertificateConfig(initialConfig);
             var np = Utility.ParseStoreProperties(initialConfig);
+
+            Logger.Trace($"ci {JsonConvert.SerializeObject(ci)}");
+            Logger.Trace($"np {JsonConvert.SerializeObject(np)}");
 
             AnyErrors result;
 
@@ -55,26 +75,32 @@ namespace DataPower
             switch (initialConfig.Job.OperationType)
             {
                 case AnyJobOperationType.Add:
+                    Logger.Trace("Entering Add Job..");
                     result = _certManager.Add(initialConfig, ci, np);
+                    Logger.Trace("Finished Add Job..");
+                    Logger.Trace($"result {JsonConvert.SerializeObject(result)}");
                     break;
                 case AnyJobOperationType.Remove:
+                    Logger.Trace("Entering Remove Job..");
                     result = _certManager.Remove(initialConfig, ci, np);
+                    Logger.Trace("Finished Remove Job..");
+                    Logger.Trace($"result {JsonConvert.SerializeObject(result)}");
                     break;
                 default:
                     return new AnyJobCompleteInfo
                     {
-                        Status = (int) JobStatuses.JobError,
+                        Status = (int)JobStatuses.JobError,
                         Message = "Unsupported operation " + initialConfig.Job.OperationType
                     };
             }
-
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return result.HasError
                 ? new AnyJobCompleteInfo
                 {
-                    Status = (int) JobStatuses.JobWarning,
+                    Status = (int)JobStatuses.JobWarning,
                     Message = "Management has Issues creating certificate objects"
                 }
-                : new AnyJobCompleteInfo {Status = (int) JobStatuses.JobSuccess, Message = "Job complete"};
+                : new AnyJobCompleteInfo { Status = (int)JobStatuses.JobSuccess, Message = "Job complete" };
         }
     }
 }
