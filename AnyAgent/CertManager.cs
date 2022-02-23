@@ -63,7 +63,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue receiving the certificates: {cryptoCertObjectName} Error {ex.Message}");
+                Logger.Error($"There was an issue receiving the certificates: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
 
@@ -95,7 +95,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {ex.Message}");
+                Logger.Error($"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -118,7 +118,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {ex.Message}");
+                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bUpdateCryptoKeyObject;
@@ -148,7 +148,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {ex.Message}");
+                Logger.Error($"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -174,7 +174,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue updating the private key: {cryptoKeyObjectName} Error {ex.Message}");
+                Logger.Error($"There was an issue updating the private key: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -201,7 +201,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {ex.Message}");
+                Logger.Error($"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -219,7 +219,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {e.Message}");
+                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -246,7 +246,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {ex.Message}");
+                Logger.Error($"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {LogHandler.FlattenException(ex)}");
             }
 
             return null;
@@ -275,7 +275,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Updating Crypto Certificate Object: {cryptoCertObjectName} Error {ex.Message}");
+                Logger.Error($"Error Updating Crypto Certificate Object: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -302,7 +302,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {ex.Message}");
+                Logger.Error($"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -319,7 +319,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {e.Message}");
+                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -345,7 +345,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Certificate {alias} with Filename {certFileName} Error {ex.Message}");
+                Logger.Error($"Error Adding Certificate {alias} with Filename {certFileName} Error {LogHandler.FlattenException(ex)}");
             }
 
             return null;
@@ -369,7 +369,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {ex.Message}");
+                Logger.Error($"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveKeyFile;
@@ -393,7 +393,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {ex.Message}");
+                Logger.Error($"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveCertificateFile;
@@ -460,7 +460,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Generating PEM: Error {ex.Message}");
+                Logger.Error($"Error Generating PEM: Error {LogHandler.FlattenException(ex)}");
             }
             Logger.Trace($"PEM {certPem}");
             Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
@@ -536,7 +536,7 @@ namespace DataPower
             catch (Exception ex)
             {
                 error.HasError = true;
-                Logger.Trace($"Error on {certAlias}: {ex.Message}");
+                Logger.Trace($"Error on {certAlias}: {LogHandler.FlattenException(ex)}");
                 apiClient.SaveConfig();
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
@@ -606,7 +606,7 @@ namespace DataPower
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
             }
             Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
@@ -638,7 +638,7 @@ namespace DataPower
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
             }
             Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
@@ -674,7 +674,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error In CertManager.Remove {e.Message}!");
+                Logger.Error($"Error In CertManager.Remove {LogHandler.FlattenException(e)}!");
                 throw;
             }
         }
@@ -699,7 +699,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error In CertManager.Add {e.Message}!");
+                Logger.Error($"Error In CertManager.Add {LogHandler.FlattenException(e)}!");
                 throw;
             }
         }
@@ -785,7 +785,7 @@ namespace DataPower
             catch (Exception ex)
             {
                 error.HasError = true;
-                Logger.Trace($"Error on {alias}: {ex.Message}");
+                Logger.Trace($"Error on {alias}: {LogHandler.FlattenException(ex)}");
                 apiClient.SaveConfig();
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
@@ -819,7 +819,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplacePrivateKey {e.Message}");
+                Logger.Error($"Error in CertManager.ReplacePrivateKey {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -847,7 +847,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplaceCertificateFile {e.Message}");
+                Logger.Error($"Error in CertManager.ReplaceCertificateFile {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -887,7 +887,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplaceCryptoKeyObject {e.Message}");
+                Logger.Error($"Error in CertManager.ReplaceCryptoKeyObject {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -929,7 +929,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplaceCryptoObject {e.Message}");
+                Logger.Error($"Error in CertManager.ReplaceCryptoObject {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -997,7 +997,7 @@ namespace DataPower
                         }
                         catch (Exception ex)
                         {
-                            Logger.Error($"Error on {pc.Name}: {ex.Message}");
+                            Logger.Error($"Error on {pc.Name}: {LogHandler.FlattenException(ex)}");
                             error.ErrorMessage = ex.Message;
                             error.HasError = true;
                         }
@@ -1010,7 +1010,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.GetPublicCerts {e.Message}");
+                Logger.Error($"Error in CertManager.GetPublicCerts {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
@@ -1071,7 +1071,7 @@ namespace DataPower
                         }
                         catch (Exception ex)
                         {
-                            Logger.Error($"Certificate not retrievable: Error on {cc.Name}: {ex.Message}");
+                            Logger.Error($"Certificate not retrievable: Error on {cc.Name}: {LogHandler.FlattenException(ex)}");
                             error.ErrorMessage = ex.Message;
                             error.HasError = true;
                         }
@@ -1085,7 +1085,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.GetCerts {e.Message}");
+                Logger.Error($"Error in CertManager.GetCerts {LogHandler.FlattenException(e)}");
                 throw;
             }
         }
