@@ -62,7 +62,7 @@ namespace DataPower.API.client
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Saving the Config: {ex.Message}");
+                Logger.Error($"Error Saving the Config: {LogHandler.FlattenException(ex)}");
                 return false;
             }
         }
@@ -296,7 +296,7 @@ namespace DataPower.API.client
             }
             catch (Exception ex)
             {
-                Logger.Trace($"END APIRequestString error: {ex.Message}");
+                Logger.Trace($"END APIRequestString error: {LogHandler.FlattenException(ex)}");
                 throw;
             }
         }
