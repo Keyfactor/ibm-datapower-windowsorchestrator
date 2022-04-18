@@ -1,10 +1,4 @@
-﻿# {{ name }}
-## {{ integration_type | capitalize }}
-
-{{ description }}
-
-<!-- add integration specific information below -->
-*** 
+﻿*** 
 
 **1) Create the new Certificate store Type for the New DataPower AnyAgent**
 
