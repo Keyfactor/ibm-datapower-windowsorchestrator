@@ -1,12 +1,4 @@
-﻿# {{ name }}
-## {{ integration_type | capitalize }}
-
-{{ description }}
-
-<!-- add integration specific information below -->
-*** 
-
-**1) Create the new Certificate store Type for the New DataPower AnyAgent**
+﻿**1) Create the new Certificate store Type for the New DataPower AnyAgent**
 
 In Keyfactor Command create a new Certificate Store Type similar to the one below:
 - NOTE: This orchestrator _does not_ actually support the Create function per the image below
