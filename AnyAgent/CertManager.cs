@@ -972,7 +972,8 @@ namespace DataPower
 
                             Logger.Trace($"Add to List: {pc.Name}");
 
-                            var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.File));
+                            var pem = Convert.FromBase64String(viewCertResponse.File);
+                            var cert = new X509Certificate2(pem);
 
                             Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
 
