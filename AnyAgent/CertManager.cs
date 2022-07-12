@@ -25,6 +25,7 @@ using DataPower.API.api;
 using DataPower.API.client;
 using Keyfactor.Platform.Extensions.Agents;
 using Keyfactor.Platform.Extensions.Agents.Enums;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
@@ -42,7 +43,7 @@ namespace DataPower
             _appConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
             _protocol = _appConfig.AppSettings.Settings["Protocol"].Value;
         }
-        
+
         public bool DoesCryptoCertificateObjectExist(CertStoreInfo ci, string cryptoCertObjectName, ApiClient apiClient)
         {
             var bUpdateCryptoCertificateObject = false;
@@ -52,14 +53,13 @@ namespace DataPower
                 var viewAllCryptoCertRequest = new ViewCryptoCertificatesRequest(ci.Domain);
                 var viewAllCryptoCertResponse = apiClient.ViewCertificates(viewAllCryptoCertRequest);
 
-                if(viewAllCryptoCertResponse.CryptoCertificates.Count(x=> x.Name== cryptoCertObjectName)==1)
-                {
+                if (viewAllCryptoCertResponse.CryptoCertificates.Count(x => x.Name == cryptoCertObjectName) == 1)
                     bUpdateCryptoCertificateObject = true;
-                }
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue receiving the certificates: {cryptoCertObjectName} Error {ex.Message}");
+                Logger.Error(
+                    $"There was an issue receiving the certificates: {cryptoCertObjectName} Error {ex.Message}");
             }
 
             return bUpdateCryptoCertificateObject;
@@ -86,7 +86,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {ex.Message}");
+                Logger.Error(
+                    $"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {ex.Message}");
             }
         }
 
@@ -99,9 +100,7 @@ namespace DataPower
                 var viewCryptoKeyRequest = new ViewCryptoKeysRequest(ci.Domain);
                 var viewCryptoKeyResponse = apiClient.ViewCryptoKeys(viewCryptoKeyRequest);
                 if (viewCryptoKeyResponse.CryptoKeys.Count(x => x.Name == cryptoKeyObjectName) == 1)
-                {
                     bUpdateCryptoKeyObject = true;
-                }
             }
             catch (Exception ex)
             {
@@ -131,31 +130,32 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {ex.Message}");
+                Logger.Error(
+                    $"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {ex.Message}");
             }
         }
 
         public void UpdatePrivateKey(CertStoreInfo ci, string cryptoKeyObjectName,
             ApiClient apiClient, string keyFileName, string alias)
         {
-                Logger.Trace($"Updating Crypto Key Object: {cryptoKeyObjectName}");
-                try
+            Logger.Trace($"Updating Crypto Key Object: {cryptoKeyObjectName}");
+            try
+            {
+                var cryptoKeyRequest = new CryptoKeyUpdateRequest(apiClient.Domain, cryptoKeyObjectName)
                 {
-                    var cryptoKeyRequest = new CryptoKeyUpdateRequest(apiClient.Domain, cryptoKeyObjectName)
+                    CryptoKey = new CryptoKey
                     {
-                        CryptoKey = new CryptoKey
-                        {
-                            CertFile = ci.CertificateStore.Trim() + ":///" + keyFileName,
-                            Name = cryptoKeyObjectName
-                        }
-                    };
+                        CertFile = ci.CertificateStore.Trim() + ":///" + keyFileName,
+                        Name = cryptoKeyObjectName
+                    }
+                };
 
-                    apiClient.UpdateCryptoKey(cryptoKeyRequest);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"There was an issue updating the private key: {cryptoKeyObjectName} Error {ex.Message}");
-                }
+                apiClient.UpdateCryptoKey(cryptoKeyRequest);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"There was an issue updating the private key: {cryptoKeyObjectName} Error {ex.Message}");
+            }
         }
 
         public void AddCryptoKey(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient, string keyFileName,
@@ -178,18 +178,19 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {ex.Message}");
+                Logger.Error(
+                    $"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {ex.Message}");
             }
         }
 
         public AnyErrors RemovePrivateKeyFile(AnyJobConfigInfo addConfig, CertStoreInfo ci,
             string keyFileName)
         {
-                Logger.Trace($"Removing Old Private Key File {keyFileName}");
-                var removeFileResult=RemoveFile(addConfig, ci, keyFileName);
-                Logger.Trace($"Private Key {keyFileName} is removed");
+            Logger.Trace($"Removing Old Private Key File {keyFileName}");
+            var removeFileResult = RemoveFile(addConfig, ci, keyFileName);
+            Logger.Trace($"Private Key {keyFileName} is removed");
 
-                return removeFileResult;
+            return removeFileResult;
         }
 
         public CertificateAddRequest AddPrivateKey(CertStoreInfo ci, string alias, string keyFileName,
@@ -211,7 +212,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {ex.Message}");
+                Logger.Error(
+                    $"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {ex.Message}");
             }
 
             return null;
@@ -220,27 +222,28 @@ namespace DataPower
         public void UpdateCryptoCert(CertStoreInfo ci, string cryptoCertObjectName,
             ApiClient apiClient, string certFileName, string alias)
         {
-                Logger.Trace($"Updating Crypto Certificate Object: {cryptoCertObjectName}");
-                try
+            Logger.Trace($"Updating Crypto Certificate Object: {cryptoCertObjectName}");
+            try
+            {
+                var cryptoCertRequest = new CryptoCertificateUpdateRequest(apiClient.Domain, cryptoCertObjectName)
                 {
-                    var cryptoCertRequest = new CryptoCertificateUpdateRequest(apiClient.Domain, cryptoCertObjectName)
+                    CryptoCert = new CryptoCertificate
                     {
-                        CryptoCert = new CryptoCertificate
-                        {
-                            CertFile = ci.CertificateStore.Trim() + ":///" + certFileName,
-                            Name = cryptoCertObjectName
-                        }
-                    };
+                        CertFile = ci.CertificateStore.Trim() + ":///" + certFileName,
+                        Name = cryptoCertObjectName
+                    }
+                };
 
-                    apiClient.UpdateCryptoCertificate(cryptoCertRequest);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"Error Updating Crypto Certificate Object: {cryptoCertObjectName} Error {ex.Message}");
-                }
+                apiClient.UpdateCryptoCertificate(cryptoCertRequest);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Error Updating Crypto Certificate Object: {cryptoCertObjectName} Error {ex.Message}");
+            }
         }
 
-        public void AddCryptoCert(CertStoreInfo ci, string cryptoCertObjectName, ApiClient apiClient, string certFileName,
+        public void AddCryptoCert(CertStoreInfo ci, string cryptoCertObjectName, ApiClient apiClient,
+            string certFileName,
             string alias)
         {
             Logger.Trace(
@@ -260,17 +263,18 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {ex.Message}");
+                Logger.Error(
+                    $"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {ex.Message}");
             }
         }
 
         public AnyErrors RemoveCertificate(AnyJobConfigInfo addConfig, CertStoreInfo ci, string certFileName)
         {
             Logger.Trace($"Removing Old Certificate File {certFileName}");
-                var result=RemoveFile(addConfig, ci, certFileName);
-                Logger.Trace($"Old Certificate File {certFileName} is removed");
+            var result = RemoveFile(addConfig, ci, certFileName);
+            Logger.Trace($"Old Certificate File {certFileName} is removed");
 
-                return result;
+            return result;
         }
 
         public CertificateAddRequest CertificateAddRequest(CertStoreInfo ci, string alias, string certFileName,
@@ -297,7 +301,8 @@ namespace DataPower
             return null;
         }
 
-        public bool DoesKeyFileExist(CertStoreInfo ci, string keyFileName, ViewPublicCertificatesResponse viewCertificateCollection)
+        public bool DoesKeyFileExist(CertStoreInfo ci, string keyFileName,
+            ViewPublicCertificatesResponse viewCertificateCollection)
         {
             var bRemoveKeyFile = false;
             try
@@ -314,20 +319,22 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {ex.Message}");
+                Logger.Error(
+                    $"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {ex.Message}");
             }
 
             return bRemoveKeyFile;
         }
 
         public bool DoesCertificateFileExist(CertStoreInfo ci, ApiClient apiClient,
-            string certFileName,ViewPublicCertificatesResponse viewCertificateCollection)
+            string certFileName, ViewPublicCertificatesResponse viewCertificateCollection)
         {
             var bRemoveCertificateFile = false;
             try
             {
                 var publicCertificate =
-                    viewCertificateCollection.PubFileStoreLocation?.PubFileStore?.PubFiles?.FirstOrDefault(x => x?.Name == certFileName);
+                    viewCertificateCollection.PubFileStoreLocation?.PubFileStore?.PubFiles?.FirstOrDefault(x =>
+                        x?.Name == certFileName);
 
                 if (!(publicCertificate is null))
                 {
@@ -337,7 +344,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {ex.Message}");
+                Logger.Error(
+                    $"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {ex.Message}");
             }
 
             return bRemoveCertificateFile;
@@ -356,11 +364,11 @@ namespace DataPower
 
                     Pkcs12Store store;
 
-                    using (MemoryStream ms = new MemoryStream(certData))
+                    using (var ms = new MemoryStream(certData))
                     {
                         store = new Pkcs12Store(ms,
                             addConfig.Job.PfxPassword.ToCharArray());
-                        
+
                         string storeAlias;
                         TextWriter streamWriter;
                         using (var memoryStream = new MemoryStream())
@@ -410,8 +418,7 @@ namespace DataPower
 
         public AnyErrors AddPubCert(AnyJobConfigInfo addPubConfig, CertStoreInfo ci, NamePrefix np)
         {
-            
-            var error=new AnyErrors();
+            var error = new AnyErrors();
             Logger.Trace("Entering AddPubCert");
             error.HasError = false;
             Logger.Trace($"Entering AddPubCert for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
@@ -425,30 +432,24 @@ namespace DataPower
 
             try
             {
-
                 Pkcs12Store store;
                 string certPem;
                 var certData = Convert.FromBase64String(addPubConfig.Job.EntryContents);
 
                 //If you have a password then you will get a PFX in return instead of the base64 encoded string
-                if(!String.IsNullOrEmpty(addPubConfig.Job?.PfxPassword))
-                {
-                    using (MemoryStream ms = new MemoryStream(certData))
+                if (!string.IsNullOrEmpty(addPubConfig.Job?.PfxPassword))
+                    using (var ms = new MemoryStream(certData))
                     {
-
                         store = new Pkcs12Store(ms, addPubConfig.Job.PfxPassword.ToCharArray());
                         var storeAlias = store.Aliases.Cast<string>().SingleOrDefault(a => store.IsKeyEntry(a));
                         certPem = Utility.Pemify(
                             Convert.ToBase64String(store.GetCertificate(storeAlias).Certificate.GetEncoded()));
                     }
-                }
                 else
-                {
                     certPem = Utility.Pemify(addPubConfig.Job.EntryContents);
-                }
-                
+
                 var certFileName = certAlias.Replace(".", "_") + ".pem";
-                
+
                 Logger.Trace(
                     $"Adding Public Cert Certificate {certAlias} to PUBCERT store with Filename {certFileName} ");
                 var certRequest =
@@ -489,7 +490,8 @@ namespace DataPower
                 Logger.Trace($"Checking to find CryptoCertObject {removeConfig.Job.Alias} ");
                 var viewCert = new ViewCryptoCertificatesRequest(apiClient.Domain, removeConfig.Job.Alias);
                 var viewCertificateSingle = apiClient.ViewCryptoCertificate(viewCert);
-                if (viewCertificateSingle != null && !string.IsNullOrEmpty(viewCertificateSingle.CryptoCertificate.Name))
+                if (viewCertificateSingle != null &&
+                    !string.IsNullOrEmpty(viewCertificateSingle.CryptoCertificate.Name))
                 {
                     Logger.Trace($"Remove CryptoObject {viewCertificateSingle.CryptoCertificate.Name} ");
                     var request =
@@ -502,7 +504,8 @@ namespace DataPower
                 }
 
                 var cryptoKeyObjectName = Utility.ReplaceFirstOccurrence(removeConfig.Job.Alias,
-                    np.CryptoCertObjectPrefix?.Trim() ?? String.Empty, np.CryptoKeyObjectPrefix?.Trim() ?? String.Empty);
+                    np.CryptoCertObjectPrefix?.Trim() ?? string.Empty,
+                    np.CryptoKeyObjectPrefix?.Trim() ?? string.Empty);
                 Logger.Trace($"Checking to find CryptoKeyObject {cryptoKeyObjectName} ");
                 var viewKey = new ViewCryptoKeysRequest(apiClient.Domain);
                 var viewKeyResponse = apiClient.ViewCryptoKeys(viewKey);
@@ -559,13 +562,13 @@ namespace DataPower
 
         public AnyErrors Remove(AnyJobConfigInfo removeConfig, CertStoreInfo ci, NamePrefix np)
         {
-            var error=new AnyErrors();
+            var error = new AnyErrors();
             Logger.Trace("Entering Remove");
             error.HasError = false;
-            
+
             var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
             var storePath = removeConfig.Store.StorePath;
-            
+
             if (storePath.Contains(publicCertStoreName))
             {
                 Logger.Trace("Cannot Remove Public Certificates");
@@ -573,7 +576,7 @@ namespace DataPower
             }
             else
             {
-                error=RemoveCertFromDomain(removeConfig, ci, np);
+                error = RemoveCertFromDomain(removeConfig, ci, np);
             }
 
             return error;
@@ -588,7 +591,9 @@ namespace DataPower
             var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
             var storePath = addConfig.Store.StorePath;
 
-            result = storePath.Contains(publicCertStoreName) ? AddPubCert(addConfig, ci, np) : AddCertStore(addConfig, ci, np);
+            result = storePath.Contains(publicCertStoreName)
+                ? AddPubCert(addConfig, ci, np)
+                : AddCertStore(addConfig, ci, np);
 
             return result;
         }
@@ -633,9 +638,11 @@ namespace DataPower
                     var viewCert = new ViewPublicCertificatesRequest(ci.Domain, ci.CertificateStore);
                     var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
 
-                    ReplaceCertificateFile(addConfig, ci, apiClient, certFileName, viewCertificateCollection, alias, certPem);
+                    ReplaceCertificateFile(addConfig, ci, apiClient, certFileName, viewCertificateCollection, alias,
+                        certPem);
                     ReplaceCryptoObject(ci, cryptoCertObjectName, apiClient, certFileName, alias);
-                    ReplacePrivateKey(addConfig, ci, keyFileName, viewCertificateCollection, alias, apiClient, privateKeyString);
+                    ReplacePrivateKey(addConfig, ci, keyFileName, viewCertificateCollection, alias, apiClient,
+                        privateKeyString);
                     ReplaceCryptoKeyObject(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
                 }
 
@@ -680,7 +687,8 @@ namespace DataPower
             apiClient.AddCertificateFile(certRequest);
         }
 
-        private void ReplaceCryptoKeyObject(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient, string keyFileName,
+        private void ReplaceCryptoKeyObject(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient,
+            string keyFileName,
             string alias)
         {
             //Search to See if the Crypto *Key* Object Already Exists (If so, it needs disabled and updated, If not add a new one)
@@ -720,14 +728,14 @@ namespace DataPower
         public InventoryResult GetPublicCerts(ApiClient apiClient)
         {
             var result = new InventoryResult();
-            var error = new AnyErrors { HasError = false };
+            var error = new AnyErrors {HasError = false};
 
             Logger.Trace("GetPublicCerts");
             var viewCert = new ViewPublicCertificatesRequest();
             var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
 
             var intCount = 0;
-            char[] s = { ',' };
+            char[] s = {','};
 
 
             var intMax = Convert.ToInt32(_appConfig.AppSettings.Settings["MaxInventoryCapacity"].Value);
@@ -740,37 +748,51 @@ namespace DataPower
                 {
                     Logger.Trace($"Looping through public files: {pc.Name}");
                     var viewCertDetail = new ViewPubCertificateDetailRequest(pc.Name);
-
+                    Logger.Trace($"Cert Detail Request: {JsonConvert.SerializeObject(viewCertDetail)}");
                     try
                     {
                         var viewCertResponse = apiClient.ViewPublicCertificate(viewCertDetail);
+                        Logger.Trace($"Cert Detail Response: {JsonConvert.SerializeObject(viewCertResponse)}");
 
                         Logger.Trace($"Add to List: {pc.Name}");
+                        var pem = Convert.FromBase64String(viewCertResponse.File);
+                        var pemString = Encoding.UTF8.GetString(pem);
+                        Logger.Trace($"Pem File: {pemString}");
 
-                        var cert=new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.File));
-
-                        if (intCount < intMax)
+                        if (pemString.Contains("BEGIN CERTIFICATE"))
                         {
-                            if (!blackList.Contains(pc.Name) && cert.Thumbprint!=null)
-                                inventoryItems.Add(
-                                    new AgentCertStoreInventoryItem
-                                    {
-                                        Certificates = new[] {viewCertResponse.File},
-                                        Alias = pc.Name,
-                                        PrivateKeyEntry = false,
-                                        ItemStatus = AgentInventoryItemStatus.Unknown,
-                                        UseChainLevel = true
-                                    });
+                            Logger.Trace("Valid Pem File Adding to KF");
+                            var cert = new X509Certificate2(pem);
+                            var b64 = Convert.ToBase64String(cert.Export(X509ContentType.Cert));
+                            Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
 
-                            intCount++;
+                            if (intCount < intMax)
+                            {
+                                if (!blackList.Contains(pc.Name) && cert.Thumbprint != null)
+                                    inventoryItems.Add(
+                                        new AgentCertStoreInventoryItem
+                                        {
+                                            Certificates = new[] {b64},
+                                            Alias = pc.Name,
+                                            PrivateKeyEntry = false,
+                                            ItemStatus = AgentInventoryItemStatus.Unknown,
+                                            UseChainLevel = true
+                                        });
 
-                            Logger.Trace($"Inv-Certs: {pc.Name}");
-                            Logger.Trace($"Certificates: {viewCertResponse.File}");
+                                intCount++;
+
+                                Logger.Trace($"Inv-Certs: {pc.Name}");
+                                Logger.Trace($"Certificates: {viewCertResponse.File}");
+                            }
+                        }
+                        else
+                        {
+                            Logger.Trace("Not a valid Pem File, Skipping the Add to Keyfactor...");
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error($"Error on {pc.Name}: {ex.Message}");
+                        Logger.Error($"Error on {pc.Name}: {LogHandler.FlattenException(ex)}");
                         error.ErrorMessage = ex.Message;
                         error.HasError = true;
                     }
@@ -785,7 +807,7 @@ namespace DataPower
         public InventoryResult GetCerts(ApiClient apiClient)
         {
             var result = new InventoryResult();
-            var error = new AnyErrors { HasError = false };
+            var error = new AnyErrors {HasError = false};
 
             Logger.Trace("GetCerts");
             var viewCert = new ViewCryptoCertificatesRequest(apiClient.Domain);
@@ -813,11 +835,11 @@ namespace DataPower
                         var viewCertResponse = apiClient.ViewCryptoCertificate(viewCertDetail);
 
                         //check this is a valid cert, if not fall to the errors
-                        var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject.CertDetailsObject.EncodedCert.Value));
+                        var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject
+                            .CertDetailsObject.EncodedCert.Value));
 
                         Logger.Trace($"Add to list: {cc.Name}");
                         if (cert.Thumbprint != null)
-                        {
                             inventoryItems.Add(
                                 new AgentCertStoreInventoryItem
                                 {
@@ -828,7 +850,6 @@ namespace DataPower
                                     ItemStatus = AgentInventoryItemStatus.Unknown,
                                     UseChainLevel = true
                                 });
-                        }
                     }
                     catch (Exception ex)
                     {
