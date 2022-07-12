@@ -971,29 +971,39 @@ namespace DataPower
                             Logger.Trace($"Cert Detail Response: {JsonConvert.SerializeObject(viewCertResponse)}");
 
                             Logger.Trace($"Add to List: {pc.Name}");
-
                             var pem = Convert.FromBase64String(viewCertResponse.File);
-                            var cert = new X509Certificate2(pem);
+                            var pemString = Encoding.UTF8.GetString(pem);
+                            Logger.Trace($"Pem File: {pemString}");
 
-                            Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
-
-                            if (intCount < intMax)
+                            if (pemString.Contains("BEGIN CERTIFICATE"))
                             {
-                                if (!blackList.Contains(pc.Name) && cert.Thumbprint != null)
-                                    inventoryItems.Add(
-                                        new AgentCertStoreInventoryItem
-                                        {
-                                            Certificates = new[] { viewCertResponse.File },
-                                            Alias = pc.Name,
-                                            PrivateKeyEntry = false,
-                                            ItemStatus = AgentInventoryItemStatus.Unknown,
-                                            UseChainLevel = true
-                                        });
+                                Logger.Trace("Valid Pem File Adding to KF");
+                                var cert = new X509Certificate2(pem);
+                                var b64 = Convert.ToBase64String(cert.Export(X509ContentType.Cert));
+                                Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
 
-                                intCount++;
+                                if (intCount < intMax)
+                                {
+                                    if (!blackList.Contains(pc.Name) && cert.Thumbprint != null)
+                                        inventoryItems.Add(
+                                            new AgentCertStoreInventoryItem
+                                            {
+                                                Certificates = new[] { b64 },
+                                                Alias = pc.Name,
+                                                PrivateKeyEntry = false,
+                                                ItemStatus = AgentInventoryItemStatus.Unknown,
+                                                UseChainLevel = true
+                                            });
 
-                                Logger.Trace($"Inv-Certs: {pc.Name}");
-                                Logger.Trace($"Certificates: {viewCertResponse.File}");
+                                    intCount++;
+
+                                    Logger.Trace($"Inv-Certs: {pc.Name}");
+                                    Logger.Trace($"Certificates: {viewCertResponse.File}");
+                                }
+                            }
+                            else
+                            {
+                                Logger.Trace("Not a valid Pem File, Skipping the Add to Keyfactor...");
                             }
                         }
                         catch (Exception ex)
