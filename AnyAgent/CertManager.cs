@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using CSS.Common.Logging;
+using CSS.PKI.PEM;
 using DataPower.API.api;
 using DataPower.API.client;
 using Keyfactor.Platform.Extensions.Agents;
@@ -756,13 +757,15 @@ namespace DataPower
 
                         Logger.Trace($"Add to List: {pc.Name}");
                         var pem = Convert.FromBase64String(viewCertResponse.File);
-                        var pemString = Encoding.UTF8.GetString(pem);
+
+                        var pemString = pc.Name.EndsWith(".crt") ? PemUtilities.DERToPEM(pem, PemUtilities.PemObjectType.Certificate) : Encoding.UTF8.GetString(pem);
+
                         Logger.Trace($"Pem File: {pemString}");
 
                         if (pemString.Contains("BEGIN CERTIFICATE"))
                         {
                             Logger.Trace("Valid Pem File Adding to KF");
-                            var cert = new X509Certificate2(pem);
+                            var cert = new X509Certificate2(pemString);
                             var b64 = Convert.ToBase64String(cert.Export(X509ContentType.Cert));
                             Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
 
