@@ -13,6 +13,9 @@
 // limitations under the License.
 
 using System;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using CSS.PKI.PEM;
 using DataPower.API.api;
 using Keyfactor.Platform.Extensions.Agents;
 using Newtonsoft.Json;
@@ -37,8 +40,8 @@ namespace DataPower
 
         public static string Base64Encode(string plainText)
         {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
 
         public static CertStoreInfo ParseCertificateConfig(AnyJobConfigInfo config)
@@ -83,6 +86,37 @@ namespace DataPower
             return result;
         }
 
+        public static string GetPemFromResponse(byte[] pem)
+        {
+
+            string pemString;
+            try
+            {
+                pemString = PemUtilities.DERToPEM(pem, PemUtilities.PemObjectType.Certificate);
+                var ba = Encoding.ASCII.GetBytes(pemString);
+                var cert = new X509Certificate2(ba);
+            }
+            catch (Exception e)
+            {
+                pemString = String.Empty;
+            }
+
+            if (pemString.Length == 0)
+            {
+                try
+                {
+                    pemString = Encoding.UTF8.GetString(pem);
+                    var ba = Encoding.ASCII.GetBytes(pemString);
+                    var cert = new X509Certificate2(ba);
+                }
+                catch (Exception)
+                {
+                    pemString = String.Empty;
+                }
+            }
+
+            return pemString;
+        }
 
     }
 }
