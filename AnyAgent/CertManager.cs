@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using CSS.Common.Logging;
-using CSS.PKI.PEM;
 using DataPower.API.api;
 using DataPower.API.client;
 using Keyfactor.Platform.Extensions.Agents;
@@ -479,7 +478,7 @@ namespace DataPower
 
         private AnyErrors RemoveCertFromDomain(AnyJobConfigInfo removeConfig, CertStoreInfo ci, NamePrefix np)
         {
-            var error = new AnyErrors {HasError = false};
+            var error = new AnyErrors { HasError = false };
             Logger.Trace($"Entering RemoveCertStore for {removeConfig.Job.Alias} ");
             Logger.Trace(
                 $"Entering RemoveCertStore for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
@@ -536,7 +535,7 @@ namespace DataPower
 
         private AnyErrors RemoveFile(AnyJobConfigInfo removeConfig, CertStoreInfo ci, string filename)
         {
-            var error = new AnyErrors {HasError = false};
+            var error = new AnyErrors { HasError = false };
             Logger.Trace($"Entering RemoveFile for {removeConfig.Job.Alias} ");
             Logger.Trace($"Entering RemoveFile for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
             var apiClient = new ApiClient(removeConfig.Server.Username, removeConfig.Server.Password,
@@ -729,14 +728,14 @@ namespace DataPower
         public InventoryResult GetPublicCerts(ApiClient apiClient)
         {
             var result = new InventoryResult();
-            var error = new AnyErrors {HasError = false};
+            var error = new AnyErrors { HasError = false };
 
             Logger.Trace("GetPublicCerts");
             var viewCert = new ViewPublicCertificatesRequest();
             var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
 
             var intCount = 0;
-            char[] s = {','};
+            char[] s = { ',' };
 
 
             var intMax = Convert.ToInt32(_appConfig.AppSettings.Settings["MaxInventoryCapacity"].Value);
@@ -758,24 +757,21 @@ namespace DataPower
                         Logger.Trace($"Add to List: {pc.Name}");
                         var pem = Convert.FromBase64String(viewCertResponse.File);
 
-                        var pemString = pc.Name.EndsWith(".crt") ? PemUtilities.DERToPEM(pem, PemUtilities.PemObjectType.Certificate) : Encoding.UTF8.GetString(pem);
+                        var pemString = Utility.GetPemFromResponse(pem);
 
                         Logger.Trace($"Pem File: {pemString}");
 
                         if (pemString.Contains("BEGIN CERTIFICATE"))
                         {
                             Logger.Trace("Valid Pem File Adding to KF");
-                            var cert = new X509Certificate2(pemString);
-                            var b64 = Convert.ToBase64String(cert.Export(X509ContentType.Cert));
-                            Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
 
                             if (intCount < intMax)
                             {
-                                if (!blackList.Contains(pc.Name) && cert.Thumbprint != null)
+                                if (!blackList.Contains(pc.Name))
                                     inventoryItems.Add(
                                         new AgentCertStoreInventoryItem
                                         {
-                                            Certificates = new[] {b64},
+                                            Certificates = new[] { pemString },
                                             Alias = pc.Name,
                                             PrivateKeyEntry = false,
                                             ItemStatus = AgentInventoryItemStatus.Unknown,
@@ -810,7 +806,7 @@ namespace DataPower
         public InventoryResult GetCerts(ApiClient apiClient)
         {
             var result = new InventoryResult();
-            var error = new AnyErrors {HasError = false};
+            var error = new AnyErrors { HasError = false };
 
             Logger.Trace("GetCerts");
             var viewCert = new ViewCryptoCertificatesRequest(apiClient.Domain);
