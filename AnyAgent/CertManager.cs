@@ -56,14 +56,12 @@ namespace DataPower
                 Logger.Trace($"viewAllCryptoCertResponse JSON {JsonConvert.SerializeObject(viewAllCryptoCertResponse)}");
 
                 if (viewAllCryptoCertResponse.CryptoCertificates.Count(x => x.Name == cryptoCertObjectName) == 1)
-                {
-                    Logger.Trace("Only One Found, we are good!");
                     bUpdateCryptoCertificateObject = true;
-                }
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue receiving the certificates: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"There was an issue receiving the certificates: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
 
@@ -95,7 +93,9 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {LogHandler.FlattenException(ex)}");
+
             }
         }
 
@@ -111,14 +111,11 @@ namespace DataPower
                 var viewCryptoKeyResponse = apiClient.ViewCryptoKeys(viewCryptoKeyRequest);
                 Logger.Trace($"viewCryptoKeyResponse JSON {JsonConvert.SerializeObject(viewCryptoKeyResponse)}");
                 if (viewCryptoKeyResponse.CryptoKeys.Count(x => x.Name == cryptoKeyObjectName) == 1)
-                {
-                    Logger.Trace("Only One Found, we are good!");
                     bUpdateCryptoKeyObject = true;
-                }
             }
             catch (Exception ex)
             {
-                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {LogHandler.FlattenException(ex)}");
+                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {ex.Message}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bUpdateCryptoKeyObject;
@@ -148,14 +145,14 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
         public void UpdatePrivateKey(CertStoreInfo ci, string cryptoKeyObjectName,
             ApiClient apiClient, string keyFileName, string alias)
         {
-            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace($"Updating Crypto Key Object: {cryptoKeyObjectName}");
             try
             {
@@ -167,10 +164,8 @@ namespace DataPower
                         Name = cryptoKeyObjectName
                     }
                 };
-                Logger.Trace($"cryptoKeyRequest JSON {JsonConvert.SerializeObject(cryptoKeyRequest)}");
+
                 apiClient.UpdateCryptoKey(cryptoKeyRequest);
-                Logger.Trace("Private Key Updated!");
-                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -201,7 +196,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -217,9 +213,9 @@ namespace DataPower
                 Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
                 return removeFileResult;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {LogHandler.FlattenException(ex)}");
                 throw;
             }
         }
@@ -246,7 +242,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {LogHandler.FlattenException(ex)}");
             }
 
             return null;
@@ -255,7 +252,6 @@ namespace DataPower
         public void UpdateCryptoCert(CertStoreInfo ci, string cryptoCertObjectName,
             ApiClient apiClient, string certFileName, string alias)
         {
-            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace($"Updating Crypto Certificate Object: {cryptoCertObjectName}");
             try
             {
@@ -268,10 +264,7 @@ namespace DataPower
                     }
                 };
 
-                Logger.Trace($"certKeyRequest JSON {JsonConvert.SerializeObject(cryptoCertRequest)}");
                 apiClient.UpdateCryptoCertificate(cryptoCertRequest);
-                Logger.Trace("UpdateCryptoCert Updated !");
-                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -279,7 +272,8 @@ namespace DataPower
             }
         }
 
-        public void AddCryptoCert(CertStoreInfo ci, string cryptoCertObjectName, ApiClient apiClient, string certFileName,
+        public void AddCryptoCert(CertStoreInfo ci, string cryptoCertObjectName, ApiClient apiClient,
+            string certFileName,
             string alias)
         {
             Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
@@ -302,7 +296,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {LogHandler.FlattenException(ex)}");
             }
         }
 
@@ -317,11 +312,12 @@ namespace DataPower
                 Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
                 return result;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {LogHandler.FlattenException(ex)}");
                 throw;
             }
+
         }
 
         public CertificateAddRequest CertificateAddRequest(CertStoreInfo ci, string alias, string certFileName,
@@ -351,7 +347,8 @@ namespace DataPower
             return null;
         }
 
-        public bool DoesKeyFileExist(CertStoreInfo ci, string keyFileName, ViewPublicCertificatesResponse viewCertificateCollection)
+        public bool DoesKeyFileExist(CertStoreInfo ci, string keyFileName,
+            ViewPublicCertificatesResponse viewCertificateCollection)
         {
             Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var bRemoveKeyFile = false;
@@ -369,7 +366,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveKeyFile;
@@ -383,7 +381,8 @@ namespace DataPower
             try
             {
                 var publicCertificate =
-                    viewCertificateCollection.PubFileStoreLocation?.PubFileStore?.PubFiles?.FirstOrDefault(x => x?.Name == certFileName);
+                    viewCertificateCollection.PubFileStoreLocation?.PubFileStore?.PubFiles?.FirstOrDefault(x =>
+                        x?.Name == certFileName);
 
                 if (!(publicCertificate is null))
                 {
@@ -393,7 +392,8 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error(
+                    $"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {LogHandler.FlattenException(ex)}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveCertificateFile;
@@ -414,7 +414,7 @@ namespace DataPower
 
                     Pkcs12Store store;
 
-                    using (MemoryStream ms = new MemoryStream(certData))
+                    using (var ms = new MemoryStream(certData))
                     {
                         store = new Pkcs12Store(ms,
                             addConfig.Job.PfxPassword.ToCharArray());
@@ -469,9 +469,8 @@ namespace DataPower
 
         public AnyErrors AddPubCert(AnyJobConfigInfo addPubConfig, CertStoreInfo ci, NamePrefix np)
         {
-
             var error = new AnyErrors();
-            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+            Logger.Trace("Entering AddPubCert");
             error.HasError = false;
             Logger.Trace($"Entering AddPubCert for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
             Logger.Trace($"Creating API Client Created with user: {addPubConfig.Server.Username} password: {addPubConfig.Server.Password} protocol: {_protocol} ClientMachine: {addPubConfig.Store.ClientMachine.Trim()} Domain: {ci.Domain}");
@@ -488,30 +487,21 @@ namespace DataPower
 
             try
             {
-
                 Pkcs12Store store;
                 string certPem;
                 var certData = Convert.FromBase64String(addPubConfig.Job.EntryContents);
 
                 //If you have a password then you will get a PFX in return instead of the base64 encoded string
-                if (!String.IsNullOrEmpty(addPubConfig.Job?.PfxPassword))
-                {
-                    Logger.Trace($"Has PFX Password {addPubConfig.Job?.PfxPassword}");
-                    using (MemoryStream ms = new MemoryStream(certData))
+                if (!string.IsNullOrEmpty(addPubConfig.Job?.PfxPassword))
+                    using (var ms = new MemoryStream(certData))
                     {
-
                         store = new Pkcs12Store(ms, addPubConfig.Job.PfxPassword.ToCharArray());
                         var storeAlias = store.Aliases.Cast<string>().SingleOrDefault(a => store.IsKeyEntry(a));
                         certPem = Utility.Pemify(
                             Convert.ToBase64String(store.GetCertificate(storeAlias).Certificate.GetEncoded()));
                     }
-                }
                 else
-                {
                     certPem = Utility.Pemify(addPubConfig.Job.EntryContents);
-                }
-
-                Logger.Trace($"certPem {certPem}");
 
                 var certFileName = certAlias.Replace(".", "_") + ".pem";
 
@@ -546,7 +536,6 @@ namespace DataPower
 
         private AnyErrors RemoveCertFromDomain(AnyJobConfigInfo removeConfig, CertStoreInfo ci, NamePrefix np)
         {
-            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var error = new AnyErrors { HasError = false };
             Logger.Trace($"Entering RemoveCertStore for {removeConfig.Job.Alias} ");
             Logger.Trace(
@@ -562,9 +551,8 @@ namespace DataPower
                 Logger.Trace($"viewCert JSON {JsonConvert.SerializeObject(viewCert)}");
 
                 var viewCertificateSingle = apiClient.ViewCryptoCertificate(viewCert);
-                Logger.Trace($"viewCert JSON {JsonConvert.SerializeObject(viewCertificateSingle)}");
-
-                if (viewCertificateSingle != null && !string.IsNullOrEmpty(viewCertificateSingle.CryptoCertificate.Name))
+                if (viewCertificateSingle != null &&
+                    !string.IsNullOrEmpty(viewCertificateSingle.CryptoCertificate.Name))
                 {
                     Logger.Trace($"Remove CryptoObject {viewCertificateSingle.CryptoCertificate.Name} ");
                     var request =
@@ -580,7 +568,8 @@ namespace DataPower
                 }
 
                 var cryptoKeyObjectName = Utility.ReplaceFirstOccurrence(removeConfig.Job.Alias,
-                    np.CryptoCertObjectPrefix?.Trim() ?? String.Empty, np.CryptoKeyObjectPrefix?.Trim() ?? String.Empty);
+                    np.CryptoCertObjectPrefix?.Trim() ?? string.Empty,
+                    np.CryptoKeyObjectPrefix?.Trim() ?? string.Empty);
                 Logger.Trace($"Checking to find CryptoKeyObject {cryptoKeyObjectName} ");
                 var viewKey = new ViewCryptoKeysRequest(apiClient.Domain);
                 Logger.Trace($"viewKey JSON {JsonConvert.SerializeObject(viewKey)}");
@@ -617,9 +606,8 @@ namespace DataPower
 
         private AnyErrors RemoveFile(AnyJobConfigInfo removeConfig, CertStoreInfo ci, string filename)
         {
-            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var error = new AnyErrors { HasError = false };
-            Logger.Trace($"Entering RemoveFile for {removeConfig.Job.Alias} filename {filename}");
+            Logger.Trace($"Entering RemoveFile for {removeConfig.Job.Alias} ");
             Logger.Trace($"Entering RemoveFile for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
             Logger.Trace($"Creating API Client Created with user: {removeConfig.Server.Username} password: {removeConfig.Server.Password} protocol: {_protocol} ClientMachine: {removeConfig.Store.ClientMachine.Trim()} Domain: {ci.Domain}");
             var apiClient = new ApiClient(removeConfig.Server.Username, removeConfig.Server.Password,
@@ -638,7 +626,7 @@ namespace DataPower
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
             }
             Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
@@ -652,29 +640,37 @@ namespace DataPower
         {
             try
             {
-                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
-                var error = new AnyErrors { HasError = false };
+                var error = new AnyErrors();
+                Logger.Trace("Entering Remove");
+                error.HasError = false;
 
                 var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
                 var storePath = removeConfig.Store.StorePath;
-                Logger.Trace($"publicCertStoreName: {publicCertStoreName} storePath: {storePath}");
 
                 if (storePath.Contains(publicCertStoreName))
                 {
-                    Logger.Trace("Cannot Remove Public Certificates");
-                    error.HasError = true;
+                    Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                    Logger.Trace($"publicCertStoreName: {publicCertStoreName} storePath: {storePath}");
+
+                    if (storePath.Contains(publicCertStoreName))
+                    {
+                        Logger.Trace("Cannot Remove Public Certificates");
+                        error.HasError = true;
+                    }
+                    else
+                    {
+                        error = RemoveCertFromDomain(removeConfig, ci, np);
+                    }
+
+                    Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+                    Logger.Trace($"AnyErrors Return {JsonConvert.SerializeObject(error)}");
                 }
-                else
-                {
-                    error = RemoveCertFromDomain(removeConfig, ci, np);
-                }
-                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
-                Logger.Trace($"AnyErrors Return {JsonConvert.SerializeObject(error)}");
+
                 return error;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Error($"Error In CertManager.Remove {LogHandler.FlattenException(e)}!");
+                Logger.Error($"Error In CertManager.Remove {LogHandler.FlattenException(ex)}!");
                 throw;
             }
         }
@@ -690,9 +686,11 @@ namespace DataPower
 
                 var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
                 var storePath = addConfig.Store.StorePath;
-                Logger.Trace($"publicCertStoreName: {publicCertStoreName} storePath: {storePath}");
 
-                result = storePath.Contains(publicCertStoreName) ? AddPubCert(addConfig, ci, np) : AddCertStore(addConfig, ci, np);
+                result = storePath.Contains(publicCertStoreName)
+                ? AddPubCert(addConfig, ci, np)
+                : AddCertStore(addConfig, ci, np);
+
                 Logger.Trace($"result Return {JsonConvert.SerializeObject(result)}");
                 Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
                 return result;
@@ -765,16 +763,11 @@ namespace DataPower
                     var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
                     Logger.Trace($"viewCertificateCollection JSON {JsonConvert.SerializeObject(viewCertificateCollection)}");
 
-                    Logger.Trace("Starting ReplaceCertificateFile!");
-                    ReplaceCertificateFile(addConfig, ci, apiClient, certFileName, viewCertificateCollection, alias, certPem);
-                    Logger.Trace("Finished ReplaceCertificateFile!");
-                    Logger.Trace("Starting ReplaceCryptoObject!");
+                    ReplaceCertificateFile(addConfig, ci, apiClient, certFileName, viewCertificateCollection, alias,
+                        certPem);
                     ReplaceCryptoObject(ci, cryptoCertObjectName, apiClient, certFileName, alias);
-                    Logger.Trace("Finished ReplaceCryptoObject!");
-                    Logger.Trace("Starting ReplacePrivateKey!");
-                    ReplacePrivateKey(addConfig, ci, keyFileName, viewCertificateCollection, alias, apiClient, privateKeyString);
-                    Logger.Trace("Finished ReplacePrivateKey!");
-                    Logger.Trace("Starting ReplaceCryptoKeyObject!");
+                    ReplacePrivateKey(addConfig, ci, keyFileName, viewCertificateCollection, alias, apiClient,
+                        privateKeyString);
                     ReplaceCryptoKeyObject(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
                     Logger.Trace("Finished ReplaceCryptoKeyObject!");
                 }
@@ -852,7 +845,8 @@ namespace DataPower
             }
         }
 
-        private void ReplaceCryptoKeyObject(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient, string keyFileName,
+        private void ReplaceCryptoKeyObject(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient,
+            string keyFileName,
             string alias)
         {
             try
@@ -954,35 +948,36 @@ namespace DataPower
                 var intMax = Convert.ToInt32(_appConfig.AppSettings.Settings["MaxInventoryCapacity"].Value);
                 var blackList = _appConfig.AppSettings.Settings["InventoryBlackList"].Value.Split(s);
 
-                Logger.Trace($"Max Inventory: {intMax} Inventory Black List: {blackList}");
-
-                Logger.Trace("Got App Config Settings from File");
-
-                var inventoryItems = new List<AgentCertStoreInventoryItem>();
-                if (viewCertificateCollection.PubFileStoreLocation.PubFileStore?.PubFiles != null)
-                    foreach (var pc in viewCertificateCollection.PubFileStoreLocation.PubFileStore.PubFiles)
+            var inventoryItems = new List<AgentCertStoreInventoryItem>();
+            if (viewCertificateCollection.PubFileStoreLocation.PubFileStore?.PubFiles != null)
+                foreach (var pc in viewCertificateCollection.PubFileStoreLocation.PubFileStore.PubFiles)
+                {
+                    Logger.Trace($"Looping through public files: {pc.Name}");
+                    var viewCertDetail = new ViewPubCertificateDetailRequest(pc.Name);
+                    Logger.Trace($"Cert Detail Request: {JsonConvert.SerializeObject(viewCertDetail)}");
+                    try
                     {
-                        Logger.Trace($"Looping through public files: {pc.Name}");
-                        var viewCertDetail = new ViewPubCertificateDetailRequest(pc.Name);
-                        Logger.Trace($"Cert Detail Request: {JsonConvert.SerializeObject(viewCertDetail)}");
-                        try
+                        var viewCertResponse = apiClient.ViewPublicCertificate(viewCertDetail);
+                        Logger.Trace($"Cert Detail Response: {JsonConvert.SerializeObject(viewCertResponse)}");
+
+                        Logger.Trace($"Add to List: {pc.Name}");
+                        var pem = Convert.FromBase64String(viewCertResponse.File);
+
+                        var pemString = Utility.GetPemFromResponse(pem);
+
+                        Logger.Trace($"Pem File: {pemString}");
+
+                        if (pemString.Contains("BEGIN CERTIFICATE"))
                         {
-                            var viewCertResponse = apiClient.ViewPublicCertificate(viewCertDetail);
-                            Logger.Trace($"Cert Detail Response: {JsonConvert.SerializeObject(viewCertResponse)}");
-
-                            Logger.Trace($"Add to List: {pc.Name}");
-
-                            var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.File));
-
-                            Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
+                            Logger.Trace("Valid Pem File Adding to KF");
 
                             if (intCount < intMax)
                             {
-                                if (!blackList.Contains(pc.Name) && cert.Thumbprint != null)
+                                if (!blackList.Contains(pc.Name))
                                     inventoryItems.Add(
                                         new AgentCertStoreInventoryItem
                                         {
-                                            Certificates = new[] { viewCertResponse.File },
+                                            Certificates = new[] { pemString },
                                             Alias = pc.Name,
                                             PrivateKeyEntry = false,
                                             ItemStatus = AgentInventoryItemStatus.Unknown,
@@ -995,13 +990,18 @@ namespace DataPower
                                 Logger.Trace($"Certificates: {viewCertResponse.File}");
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Logger.Error($"Error on {pc.Name}: {LogHandler.FlattenException(ex)}");
-                            error.ErrorMessage = ex.Message;
-                            error.HasError = true;
+                            Logger.Trace("Not a valid Pem File, Skipping the Add to Keyfactor...");
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"Error on {pc.Name}: {LogHandler.FlattenException(ex)}");
+                        error.ErrorMessage = ex.Message;
+                        error.HasError = true;
+                    }
+                }
 
                 result.Errors = error;
                 result.InventoryList = inventoryItems;
@@ -1010,7 +1010,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.GetPublicCerts {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.GetPublicCerts {e.Message}");
                 throw;
             }
         }
@@ -1049,10 +1049,9 @@ namespace DataPower
                             var viewCertResponse = apiClient.ViewCryptoCertificate(viewCertDetail);
                             Logger.Trace($"Get Cert Response: {JsonConvert.SerializeObject(viewCertResponse)}");
 
-                            //check this is a valid cert, if not fall to the errors
-                            var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject.CertDetailsObject.EncodedCert.Value));
-
-                            Logger.Trace($"Created X509Certificate2: {cert.SerialNumber} : {cert.Subject}");
+                        //check this is a valid cert, if not fall to the errors
+                        var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject
+                            .CertDetailsObject.EncodedCert.Value));
 
                             Logger.Trace($"Add to list: {cc.Name}");
                             if (cert.Thumbprint != null)
@@ -1071,12 +1070,12 @@ namespace DataPower
                         }
                         catch (Exception ex)
                         {
-                            Logger.Error($"Certificate not retrievable: Error on {cc.Name}: {LogHandler.FlattenException(ex)}");
+                            Logger.Error($"Certificate not retrievable: Error on {cc.Name}: {ex.Message}");
                             error.ErrorMessage = ex.Message;
                             error.HasError = true;
                         }
-                    }
 
+                    }
 
                 result.Errors = error;
                 result.InventoryList = inventoryItems;
@@ -1085,7 +1084,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.GetCerts {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.GetCerts {e.Message}");
                 throw;
             }
         }
