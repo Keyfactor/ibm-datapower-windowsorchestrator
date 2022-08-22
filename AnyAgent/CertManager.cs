@@ -60,8 +60,12 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"There was an issue receiving the certificates: {cryptoCertObjectName} Error {ex.Message}");
+=======
+                Logger.Error($"There was an issue receiving the certificates: {cryptoCertObjectName} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
 
@@ -93,8 +97,12 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {ex.Message}");
+=======
+                Logger.Error($"There was an issue disabling the certificate object: {cryptoCertObjectName} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
         }
 
@@ -114,7 +122,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {LogHandler.FlattenException(ex)}");
+                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {ex.Message}");
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bUpdateCryptoKeyObject;
@@ -144,8 +152,12 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {ex.Message}");
+=======
+                Logger.Error($"There was an issue disabling the certificate *key*: {cryptoKeyObjectName} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
         }
 
@@ -195,19 +207,40 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {ex.Message}");
+=======
+                Logger.Error($"Error Adding CryptoKey Object for Private Key {alias}: {cryptoKeyObjectName} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
         }
 
         public AnyErrors RemovePrivateKeyFile(AnyJobConfigInfo addConfig, CertStoreInfo ci,
             string keyFileName)
         {
+<<<<<<< HEAD
             Logger.Trace($"Removing Old Private Key File {keyFileName}");
             var removeFileResult = RemoveFile(addConfig, ci, keyFileName);
             Logger.Trace($"Private Key {keyFileName} is removed");
 
             return removeFileResult;
+=======
+            try
+            {
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                Logger.Trace($"Removing Old Private Key File {keyFileName}");
+                var removeFileResult = RemoveFile(addConfig, ci, keyFileName);
+                Logger.Trace($"Private Key {keyFileName} is removed");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+                return removeFileResult;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {e.Message}");
+                throw;
+            }
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
         }
 
         public CertificateAddRequest AddPrivateKey(CertStoreInfo ci, string alias, string keyFileName,
@@ -232,8 +265,12 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {ex.Message}");
+=======
+                Logger.Error($"Error Adding Private Key {alias} to CERT store with Filename {keyFileName} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
 
             return null;
@@ -286,18 +323,39 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {ex.Message}");
+=======
+                Logger.Error($"Error Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
         }
 
         public AnyErrors RemoveCertificate(AnyJobConfigInfo addConfig, CertStoreInfo ci, string certFileName)
         {
+<<<<<<< HEAD
             Logger.Trace($"Removing Old Certificate File {certFileName}");
             var result = RemoveFile(addConfig, ci, certFileName);
             Logger.Trace($"Old Certificate File {certFileName} is removed");
 
             return result;
+=======
+            try
+            {
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                Logger.Trace($"Removing Old Certificate File {certFileName}");
+                var result = RemoveFile(addConfig, ci, certFileName);
+                Logger.Trace($"Old Certificate File {certFileName} is removed");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error In CertManager.RemovePrivateKeyFile: {e.Message}");
+                throw;
+            }
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
         }
 
         public CertificateAddRequest CertificateAddRequest(CertStoreInfo ci, string alias, string certFileName,
@@ -321,7 +379,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Certificate {alias} with Filename {certFileName} Error {LogHandler.FlattenException(ex)}");
+                Logger.Error($"Error Adding Certificate {alias} with Filename {certFileName} Error {ex.Message}");
             }
 
             return null;
@@ -346,8 +404,12 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {ex.Message}");
+=======
+                Logger.Error($"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveKeyFile;
@@ -372,8 +434,12 @@ namespace DataPower
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 Logger.Error(
                     $"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {ex.Message}");
+=======
+                Logger.Error($"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {ex.Message}");
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveCertificateFile;
@@ -440,7 +506,7 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Generating PEM: Error {LogHandler.FlattenException(ex)}");
+                Logger.Error($"Error Generating PEM: Error {ex.Message}");
             }
             Logger.Trace($"PEM {certPem}");
             Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
@@ -506,7 +572,7 @@ namespace DataPower
             catch (Exception ex)
             {
                 error.HasError = true;
-                Logger.Trace($"Error on {certAlias}: {LogHandler.FlattenException(ex)}");
+                Logger.Trace($"Error on {certAlias}: {ex.Message}");
                 apiClient.SaveConfig();
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
@@ -575,7 +641,7 @@ namespace DataPower
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
             }
             Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
@@ -606,7 +672,7 @@ namespace DataPower
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
             }
             Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
@@ -649,7 +715,12 @@ namespace DataPower
             }
             catch (Exception e)
             {
+<<<<<<< HEAD
                 error = RemoveCertFromDomain(removeConfig, ci, np);
+=======
+                Logger.Error($"Error In CertManager.Remove {e.Message}!");
+                throw;
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
             }
         }
 
@@ -673,7 +744,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error In CertManager.Add {LogHandler.FlattenException(e)}!");
+                Logger.Error($"Error In CertManager.Add {e.Message}!");
                 throw;
             }
         }
@@ -754,7 +825,7 @@ namespace DataPower
             catch (Exception ex)
             {
                 error.HasError = true;
-                Logger.Trace($"Error on {alias}: {LogHandler.FlattenException(ex)}");
+                Logger.Trace($"Error on {alias}: {ex.Message}");
                 apiClient.SaveConfig();
             }
             Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
@@ -788,7 +859,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplacePrivateKey {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.ReplacePrivateKey {e.Message}");
                 throw;
             }
         }
@@ -816,7 +887,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplaceCertificateFile {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.ReplaceCertificateFile {e.Message}");
                 throw;
             }
         }
@@ -857,7 +928,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplaceCryptoKeyObject {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.ReplaceCryptoKeyObject {e.Message}");
                 throw;
             }
         }
@@ -899,7 +970,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.ReplaceCryptoObject {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.ReplaceCryptoObject {e.Message}");
                 throw;
             }
         }
@@ -968,7 +1039,13 @@ namespace DataPower
                         }
                         else
                         {
+<<<<<<< HEAD
                             Logger.Trace("Not a valid Pem File, Skipping the Add to Keyfactor...");
+=======
+                            Logger.Error($"Error on {pc.Name}: {ex.Message}");
+                            error.ErrorMessage = ex.Message;
+                            error.HasError = true;
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
                         }
                     }
                     catch (Exception ex)
@@ -986,7 +1063,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.GetPublicCerts {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.GetPublicCerts {e.Message}");
                 throw;
             }
         }
@@ -1032,6 +1109,7 @@ namespace DataPower
                         var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject
                             .CertDetailsObject.EncodedCert.Value));
 
+<<<<<<< HEAD
                         Logger.Trace($"Add to list: {cc.Name}");
                         if (cert.Thumbprint != null)
                             inventoryItems.Add(
@@ -1044,6 +1122,29 @@ namespace DataPower
                                     ItemStatus = AgentInventoryItemStatus.Unknown,
                                     UseChainLevel = true
                                 });
+=======
+                            Logger.Trace($"Add to list: {cc.Name}");
+                            if (cert.Thumbprint != null)
+                            {
+                                inventoryItems.Add(
+                                    new AgentCertStoreInventoryItem
+                                    {
+                                        Certificates = new[]
+                                            {viewCertResponse.CryptoCertObject.CertDetailsObject.EncodedCert.Value},
+                                        Alias = cc.Name,
+                                        PrivateKeyEntry = true,
+                                        ItemStatus = AgentInventoryItemStatus.Unknown,
+                                        UseChainLevel = true
+                                    });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error($"Certificate not retrievable: Error on {cc.Name}: {ex.Message}");
+                            error.ErrorMessage = ex.Message;
+                            error.HasError = true;
+                        }
+>>>>>>> parent of 1d18cc1 (Added Flatten Exception)
                     }
 
 
@@ -1054,7 +1155,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error in CertManager.GetCerts {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error in CertManager.GetCerts {e.Message}");
                 throw;
             }
         }

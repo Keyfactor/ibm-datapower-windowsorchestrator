@@ -51,7 +51,7 @@ namespace DataPower
             }
             catch (Exception e)
             {
-                Logger.Error($"Error Getting Store Type: {LogHandler.FlattenException(e)}");
+                Logger.Error($"Error Getting Store Type: {e.Message}");
                 throw;
             }
         }
