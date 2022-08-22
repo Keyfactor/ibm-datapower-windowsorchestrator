@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -49,9 +48,12 @@ namespace DataPower
             var bUpdateCryptoCertificateObject = false;
             try
             {
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
                 //Get a count of the crypto certificates that have the name we are looking for should be equal to one if it exists
                 var viewAllCryptoCertRequest = new ViewCryptoCertificatesRequest(ci.Domain);
+                Logger.Trace($"viewAllCryptoCertRequest JSON {JsonConvert.SerializeObject(viewAllCryptoCertRequest)}");
                 var viewAllCryptoCertResponse = apiClient.ViewCertificates(viewAllCryptoCertRequest);
+                Logger.Trace($"viewAllCryptoCertResponse JSON {JsonConvert.SerializeObject(viewAllCryptoCertResponse)}");
 
                 if (viewAllCryptoCertResponse.CryptoCertificates.Count(x => x.Name == cryptoCertObjectName) == 1)
                     bUpdateCryptoCertificateObject = true;
@@ -61,12 +63,14 @@ namespace DataPower
                 Logger.Error(
                     $"There was an issue receiving the certificates: {cryptoCertObjectName} Error {ex.Message}");
             }
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
 
             return bUpdateCryptoCertificateObject;
         }
 
         public void DisableCryptoCertificateObject(string cryptoCertObjectName, ApiClient apiClient)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace($"Disable State for Crypto Certificate Object: {cryptoCertObjectName}");
             try
             {
@@ -82,7 +86,10 @@ namespace DataPower
                             PasswordAlias = null
                         }
                     };
+                Logger.Trace($"cryptoCertUpdateRequest JSON {JsonConvert.SerializeObject(cryptoCertUpdateRequest)}");
                 apiClient.UpdateCryptoCertificate(cryptoCertUpdateRequest);
+                Logger.Trace("Crypto Certificate Updated");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -93,25 +100,29 @@ namespace DataPower
 
         public bool DoesCryptoKeyObjectExist(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var bUpdateCryptoKeyObject = false;
             try
             {
                 //Look for CryptoKey
                 var viewCryptoKeyRequest = new ViewCryptoKeysRequest(ci.Domain);
+                Logger.Trace($"viewCryptoKeyRequest JSON {JsonConvert.SerializeObject(viewCryptoKeyRequest)}");
                 var viewCryptoKeyResponse = apiClient.ViewCryptoKeys(viewCryptoKeyRequest);
+                Logger.Trace($"viewCryptoKeyResponse JSON {JsonConvert.SerializeObject(viewCryptoKeyResponse)}");
                 if (viewCryptoKeyResponse.CryptoKeys.Count(x => x.Name == cryptoKeyObjectName) == 1)
                     bUpdateCryptoKeyObject = true;
             }
             catch (Exception ex)
             {
-                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {ex.Message}");
+                Logger.Error($"Crypto Key Object does not exist: {cryptoKeyObjectName} : {LogHandler.FlattenException(ex)}");
             }
-
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bUpdateCryptoKeyObject;
         }
 
         public void DisableCryptoKeyObject(string cryptoKeyObjectName, ApiClient apiClient)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace($"Disable State for Crypto Certificate Object: {cryptoKeyObjectName}");
             try
             {
@@ -126,7 +137,10 @@ namespace DataPower
                         PasswordAlias = null
                     }
                 };
+                Logger.Trace($"cryptoKeyUpdateRequest JSON {JsonConvert.SerializeObject(cryptoKeyUpdateRequest)}");
                 apiClient.UpdateCryptoKey(cryptoKeyUpdateRequest);
+                Logger.Trace("Crypto Key Updated!");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -161,6 +175,7 @@ namespace DataPower
         public void AddCryptoKey(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient, string keyFileName,
             string alias)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace(
                 $"Adding CryptoKey Object for Private Key {alias} to CERT store with Filename {keyFileName} ");
             try
@@ -173,8 +188,10 @@ namespace DataPower
                         Name = cryptoKeyObjectName
                     }
                 };
-
+                Logger.Trace($"cryptoKeyRequest JSON {JsonConvert.SerializeObject(cryptoKeyRequest)}");
                 apiClient.AddCryptoKey(cryptoKeyRequest);
+                Logger.Trace("Private Key Added!");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -197,6 +214,7 @@ namespace DataPower
             ApiClient apiClient,
             string privateKeyString)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace($"Adding Private Key {alias} to CERT store with Filename {keyFileName} ");
             try
             {
@@ -208,6 +226,8 @@ namespace DataPower
                         Content = privateKeyString
                     }
                 };
+                Logger.Trace($"certKeyRequest JSON {JsonConvert.SerializeObject(certKeyRequest)}");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
                 return certKeyRequest;
             }
             catch (Exception ex)
@@ -246,6 +266,7 @@ namespace DataPower
             string certFileName,
             string alias)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace(
                 $"Adding Crypto Object for Certificate {alias} to CERT store with Filename {certFileName} ");
             try
@@ -258,8 +279,10 @@ namespace DataPower
                         Name = cryptoCertObjectName
                     }
                 };
-
+                Logger.Trace($"cryptoCertRequest JSON {JsonConvert.SerializeObject(cryptoCertRequest)}");
                 apiClient.AddCryptoCertificate(cryptoCertRequest);
+                Logger.Trace("AddCryptoCert Added!");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
             catch (Exception ex)
             {
@@ -280,6 +303,7 @@ namespace DataPower
         public CertificateAddRequest CertificateAddRequest(CertStoreInfo ci, string alias, string certFileName,
             ApiClient apiClient, string certPem)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             Logger.Trace($"Adding Certificate {alias} with Filename {certFileName} ");
             try
             {
@@ -291,11 +315,13 @@ namespace DataPower
                         Content = certPem
                     }
                 };
+                Logger.Trace($"certRequest JSON {JsonConvert.SerializeObject(certRequest)}");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
                 return certRequest;
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Adding Certificate {alias} with Filename {certFileName} Error {ex.Message}");
+                Logger.Error($"Error Adding Certificate {alias} with Filename {certFileName} Error {LogHandler.FlattenException(ex)}");
             }
 
             return null;
@@ -304,6 +330,7 @@ namespace DataPower
         public bool DoesKeyFileExist(CertStoreInfo ci, string keyFileName,
             ViewPublicCertificatesResponse viewCertificateCollection)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var bRemoveKeyFile = false;
             try
             {
@@ -322,13 +349,14 @@ namespace DataPower
                 Logger.Error(
                     $"Error Matching Key File {keyFileName} was found in domain {ci.Domain} Error {ex.Message}");
             }
-
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveKeyFile;
         }
 
         public bool DoesCertificateFileExist(CertStoreInfo ci, ApiClient apiClient,
             string certFileName, ViewPublicCertificatesResponse viewCertificateCollection)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var bRemoveCertificateFile = false;
             try
             {
@@ -347,13 +375,15 @@ namespace DataPower
                 Logger.Error(
                     $"Error Matching Certificate File {certFileName} was found in domain {ci.Domain} Error {ex.Message}");
             }
-
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return bRemoveCertificateFile;
         }
 
 
         public string GetCertPem(AnyJobConfigInfo addConfig, string alias, ref string privateKeyString)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+            Logger.Trace($"alias {alias} privateKeyString {privateKeyString}");
             string certPem = null;
             try
             {
@@ -410,9 +440,10 @@ namespace DataPower
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error Generating PEM: Error {ex.Message}");
+                Logger.Error($"Error Generating PEM: Error {LogHandler.FlattenException(ex)}");
             }
-
+            Logger.Trace($"PEM {certPem}");
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             return certPem;
         }
 
@@ -422,13 +453,17 @@ namespace DataPower
             Logger.Trace("Entering AddPubCert");
             error.HasError = false;
             Logger.Trace($"Entering AddPubCert for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
-
+            Logger.Trace($"Creating API Client Created with user: {addPubConfig.Server.Username} password: {addPubConfig.Server.Password} protocol: {_protocol} ClientMachine: {addPubConfig.Store.ClientMachine.Trim()} Domain: {ci.Domain}");
             var apiClient = new ApiClient(addPubConfig.Server.Username, addPubConfig.Server.Password,
                 $"{_protocol}://" + addPubConfig.Store.ClientMachine.Trim(), ci.Domain);
+            Logger.Trace("API Client Created");
 
             var certAlias = addPubConfig.Job.Alias;
+
             if (string.IsNullOrEmpty(certAlias))
                 certAlias = Guid.NewGuid().ToString();
+
+            Logger.Trace($"certAlias {certAlias}");
 
             try
             {
@@ -451,7 +486,7 @@ namespace DataPower
                 var certFileName = certAlias.Replace(".", "_") + ".pem";
 
                 Logger.Trace(
-                    $"Adding Public Cert Certificate {certAlias} to PUBCERT store with Filename {certFileName} ");
+                    $"Adding Public Cert Certificate {certAlias} to PubCert store with Filename {certFileName} ");
                 var certRequest =
                     new CertificateAddRequest(apiClient.Domain, certFileName, ci.CertificateStore.Trim())
                     {
@@ -461,17 +496,20 @@ namespace DataPower
                             Content = certPem
                         }
                     };
-
+                Logger.Trace($"certRequest JSON {JsonConvert.SerializeObject(certRequest)}");
                 apiClient.AddCertificateFile(certRequest);
+                Logger.Trace("Certificate Added!");
                 apiClient.SaveConfig();
+                Logger.Trace("Configuration Saved!");
+
             }
             catch (Exception ex)
             {
                 error.HasError = true;
-                Logger.Trace($"Error on {certAlias}: {ex.Message}");
+                Logger.Trace($"Error on {certAlias}: {LogHandler.FlattenException(ex)}");
                 apiClient.SaveConfig();
             }
-
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return error;
         }
 
@@ -482,13 +520,16 @@ namespace DataPower
             Logger.Trace($"Entering RemoveCertStore for {removeConfig.Job.Alias} ");
             Logger.Trace(
                 $"Entering RemoveCertStore for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
+            Logger.Trace($"Creating API Client Created with user: {removeConfig.Server.Username} password: {removeConfig.Server.Password} protocol: {_protocol} ClientMachine: {removeConfig.Store.ClientMachine.Trim()} Domain: {ci.Domain}");
             var apiClient = new ApiClient(removeConfig.Server.Username, removeConfig.Server.Password,
                 $"{_protocol}://" + removeConfig.Store.ClientMachine.Trim(), ci.Domain);
-
+            Logger.Trace("API Client Created!");
             try
             {
                 Logger.Trace($"Checking to find CryptoCertObject {removeConfig.Job.Alias} ");
                 var viewCert = new ViewCryptoCertificatesRequest(apiClient.Domain, removeConfig.Job.Alias);
+                Logger.Trace($"viewCert JSON {JsonConvert.SerializeObject(viewCert)}");
+
                 var viewCertificateSingle = apiClient.ViewCryptoCertificate(viewCert);
                 if (viewCertificateSingle != null &&
                     !string.IsNullOrEmpty(viewCertificateSingle.CryptoCertificate.Name))
@@ -496,11 +537,14 @@ namespace DataPower
                     Logger.Trace($"Remove CryptoObject {viewCertificateSingle.CryptoCertificate.Name} ");
                     var request =
                         new DeleteCryptoCertificateRequest(apiClient.Domain, removeConfig.Job.Alias);
+                    Logger.Trace($"request JSON {JsonConvert.SerializeObject(request)}");
                     apiClient.DeleteCryptoCertificate(request);
                     Logger.Trace($"Remove Certificate File {viewCertificateSingle.CryptoCertificate.CertFile} ");
                     var request2 = new DeleteCertificateRequest(apiClient.Domain,
                         viewCertificateSingle.CryptoCertificate.CertFile.Replace(ci.CertificateStore + ":///", ""));
+                    Logger.Trace($"request2 JSON {JsonConvert.SerializeObject(request2)}");
                     apiClient.DeleteCertificate(request2);
+                    Logger.Trace("Certificate Deleted!");
                 }
 
                 var cryptoKeyObjectName = Utility.ReplaceFirstOccurrence(removeConfig.Job.Alias,
@@ -508,28 +552,35 @@ namespace DataPower
                     np.CryptoKeyObjectPrefix?.Trim() ?? string.Empty);
                 Logger.Trace($"Checking to find CryptoKeyObject {cryptoKeyObjectName} ");
                 var viewKey = new ViewCryptoKeysRequest(apiClient.Domain);
+                Logger.Trace($"viewKey JSON {JsonConvert.SerializeObject(viewKey)}");
                 var viewKeyResponse = apiClient.ViewCryptoKeys(viewKey);
+                Logger.Trace($"viewKeyResponse JSON {JsonConvert.SerializeObject(viewKeyResponse)}");
                 var cryptoKey = viewKeyResponse.CryptoKeys.FirstOrDefault(x => x.Name == cryptoKeyObjectName);
+                Logger.Trace($"cryptoKey JSON {JsonConvert.SerializeObject(cryptoKey)}");
                 if (viewKeyResponse.CryptoKeys != null && !string.IsNullOrEmpty(cryptoKey?.Name))
                 {
                     Logger.Trace($"Remove CryptoKeyObject {cryptoKey.Name} ");
                     var request = new DeleteCryptoKeyRequest(apiClient.Domain, cryptoKeyObjectName);
+                    Logger.Trace($"request JSON {JsonConvert.SerializeObject(request)}");
                     apiClient.DeleteCryptoKey(request);
                     Logger.Trace($"Remove Key File {cryptoKey.CertFile} ");
                     var request2 = new DeleteCertificateRequest(apiClient.Domain,
                         cryptoKey.CertFile.Replace(ci.CertificateStore + ":///", ""));
+                    Logger.Trace($"request2 JSON {JsonConvert.SerializeObject(request2)}");
                     apiClient.DeleteCertificate(request2);
+                    Logger.Trace("Certificate Deleted!");
                 }
             }
             catch (Exception ex)
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
             }
-
+            Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
-
+            Logger.Trace("Config Saved!");
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return error;
         }
 
@@ -538,25 +589,30 @@ namespace DataPower
             var error = new AnyErrors { HasError = false };
             Logger.Trace($"Entering RemoveFile for {removeConfig.Job.Alias} ");
             Logger.Trace($"Entering RemoveFile for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
+            Logger.Trace($"Creating API Client Created with user: {removeConfig.Server.Username} password: {removeConfig.Server.Password} protocol: {_protocol} ClientMachine: {removeConfig.Store.ClientMachine.Trim()} Domain: {ci.Domain}");
             var apiClient = new ApiClient(removeConfig.Server.Username, removeConfig.Server.Password,
                 $"{_protocol}://" + removeConfig.Store.ClientMachine.Trim(), ci.Domain);
-
+            Logger.Trace("Api Client Created!");
             try
             {
                 Logger.Trace($"Deleting Actual File {filename} ");
                 var request2 = new DeleteCertificateRequest(apiClient.Domain,
                     filename.Replace(ci.CertificateStore + ":///", ""));
+                Logger.Trace($"request2 JSON {JsonConvert.SerializeObject(request2)}");
                 apiClient.DeleteCertificate(request2);
+                Logger.Trace("Certificate Deleted!");
             }
             catch (Exception ex)
             {
                 error.HasError = true;
                 error.ErrorMessage = ex.Message;
-                Logger.Trace($"Error on {removeConfig.Job.Alias}: {ex.Message}");
+                Logger.Trace($"Error on {removeConfig.Job.Alias}: {LogHandler.FlattenException(ex)}");
             }
-
+            Logger.Trace("Saving Config!");
             apiClient.SaveConfig();
+            Logger.Trace("Config Saved!");
 
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return error;
         }
 
@@ -571,72 +627,117 @@ namespace DataPower
 
             if (storePath.Contains(publicCertStoreName))
             {
-                Logger.Trace("Cannot Remove Public Certificates");
-                error.HasError = true;
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                var error = new AnyErrors { HasError = false };
+
+                var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
+                var storePath = removeConfig.Store.StorePath;
+                Logger.Trace($"publicCertStoreName: {publicCertStoreName} storePath: {storePath}");
+
+                if (storePath.Contains(publicCertStoreName))
+                {
+                    Logger.Trace("Cannot Remove Public Certificates");
+                    error.HasError = true;
+                }
+                else
+                {
+                    error = RemoveCertFromDomain(removeConfig, ci, np);
+                }
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+                Logger.Trace($"AnyErrors Return {JsonConvert.SerializeObject(error)}");
+                return error;
             }
-            else
+            catch (Exception e)
             {
                 error = RemoveCertFromDomain(removeConfig, ci, np);
             }
-
-            return error;
         }
 
         public AnyErrors Add(AnyJobConfigInfo addConfig, CertStoreInfo ci, NamePrefix np)
         {
-            var result = new AnyErrors();
-            Logger.Trace("Entering Add");
-            result.HasError = false;
-
-            var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
-            var storePath = addConfig.Store.StorePath;
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+            try
+            {
+                var result = new AnyErrors();
+                Logger.Trace("Entering Add");
+                result.HasError = false;
 
             result = storePath.Contains(publicCertStoreName)
                 ? AddPubCert(addConfig, ci, np)
                 : AddCertStore(addConfig, ci, np);
 
-            return result;
+                result = storePath.Contains(publicCertStoreName) ? AddPubCert(addConfig, ci, np) : AddCertStore(addConfig, ci, np);
+                Logger.Trace($"result Return {JsonConvert.SerializeObject(result)}");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error In CertManager.Add {LogHandler.FlattenException(e)}!");
+                throw;
+            }
         }
 
         private AnyErrors AddCertStore(AnyJobConfigInfo addConfig, CertStoreInfo ci, NamePrefix np)
         {
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
             var error = new AnyErrors();
-            Logger.Trace("Entering AddCertStore");
             var privateKeyString = "";
 
             Logger.Trace($"Entering AddCertStore for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
+            Logger.Trace($"Creating API Client Created with user: {addConfig.Server.Username} password: {addConfig.Server.Password} protocol: {_protocol} ClientMachine: {addConfig.Store.ClientMachine.Trim()} Domain: {ci.Domain}");
             var apiClient = new ApiClient(addConfig.Server.Username, addConfig.Server.Password,
                 $"{_protocol}://" + addConfig.Store.ClientMachine.Trim(),
                 ci.Domain);
+            Logger.Trace("apiClient created!");
 
             var alias = addConfig.Job.Alias.ToLower();
             if (string.IsNullOrEmpty(alias))
                 alias = Guid.NewGuid().ToString().ToLower();
+
+            Logger.Trace($"alias: {alias}");
+
             try
             {
                 if (!string.IsNullOrEmpty(addConfig.Job.PfxPassword))
                 {
+                    Logger.Trace($"Has Password: {addConfig.Job.PfxPassword}");
                     var certPem = GetCertPem(addConfig, alias, ref privateKeyString);
-
+                    Logger.Trace($"certPem: {certPem}");
                     var baseAlias = alias.ToLower();
+                    Logger.Trace($"baseAlias: {baseAlias}");
 
                     var cryptoObjectPrefix = np.CryptoCertObjectPrefix?.Trim().ToLower() ?? string.Empty;
                     var keyFileNamePrefix = np.KeyFilePrefix?.Trim().ToLower() ?? string.Empty;
                     var certFileNamePrefix = np.CertFilePrefix?.Trim().ToLower() ?? string.Empty;
                     var cryptoKeyObjectPrefix = np.CryptoKeyObjectPrefix?.Trim().ToLower() ?? string.Empty;
 
+                    Logger.Trace($"cryptoObjectPrefix: {cryptoObjectPrefix}");
+                    Logger.Trace($"keyFileNamePrefix: {keyFileNamePrefix}");
+                    Logger.Trace($"certFileNamePrefix: {certFileNamePrefix}");
+                    Logger.Trace($"cryptoKeyObjectPrefix: {cryptoKeyObjectPrefix}");
+
                     if (alias.ToLower().StartsWith(cryptoObjectPrefix))
                         baseAlias = Utility.ReplaceAlias(alias.ToLower(), cryptoObjectPrefix,
                             "");
+
+                    Logger.Trace($"baseAlias: {baseAlias}");
 
                     var certFileName = certFileNamePrefix + baseAlias + ".cer";
                     var keyFileName = keyFileNamePrefix + baseAlias + ".pem";
                     var cryptoCertObjectName = cryptoObjectPrefix + baseAlias;
                     var cryptoKeyObjectName = cryptoKeyObjectPrefix + baseAlias;
 
+                    Logger.Trace($"certFileName: {certFileName}");
+                    Logger.Trace($"keyFileName: {keyFileName}");
+                    Logger.Trace($"cryptoCertObjectName: {cryptoCertObjectName}");
+                    Logger.Trace($"cryptoKeyObjectName: {cryptoKeyObjectName}");
+
                     //Get the certificate collection to be used to check for cert files and private keys
                     var viewCert = new ViewPublicCertificatesRequest(ci.Domain, ci.CertificateStore);
+                    Logger.Trace($"viewCert JSON {JsonConvert.SerializeObject(viewCert)}");
                     var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
+                    Logger.Trace($"viewCertificateCollection JSON {JsonConvert.SerializeObject(viewCertificateCollection)}");
 
                     ReplaceCertificateFile(addConfig, ci, apiClient, certFileName, viewCertificateCollection, alias,
                         certPem);
@@ -644,17 +745,19 @@ namespace DataPower
                     ReplacePrivateKey(addConfig, ci, keyFileName, viewCertificateCollection, alias, apiClient,
                         privateKeyString);
                     ReplaceCryptoKeyObject(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
+                    Logger.Trace("Finished ReplaceCryptoKeyObject!");
                 }
-
+                Logger.Trace("Saving Config!");
                 apiClient.SaveConfig();
+                Logger.Trace("Config Saved!");
             }
             catch (Exception ex)
             {
                 error.HasError = true;
-                Logger.Trace($"Error on {alias}: {ex.Message}");
+                Logger.Trace($"Error on {alias}: {LogHandler.FlattenException(ex)}");
                 apiClient.SaveConfig();
             }
-
+            Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             return error;
         }
 
@@ -662,85 +765,164 @@ namespace DataPower
             ViewPublicCertificatesResponse viewCertificateCollection, string alias, ApiClient apiClient,
             string privateKeyString)
         {
-            //See if KeyFile Exists if so remove and add a new one, if not just add a new one
-            var bRemoveKeyFile = DoesKeyFileExist(ci, keyFileName, viewCertificateCollection);
-            if (bRemoveKeyFile)
-                RemovePrivateKeyFile(addConfig, ci, keyFileName);
+            Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+            try
+            {
+                //See if KeyFile Exists if so remove and add a new one, if not just add a new one
+                var bRemoveKeyFile = DoesKeyFileExist(ci, keyFileName, viewCertificateCollection);
+                Logger.Trace($"bRemoveKeyFile {bRemoveKeyFile}");
+                if (bRemoveKeyFile)
+                {
+                    Logger.Trace("Removing Private Key!");
+                    RemovePrivateKeyFile(addConfig, ci, keyFileName);
+                    Logger.Trace("Private Key Removed!");
+                }
 
-            var certKeyRequest =
-                AddPrivateKey(ci, alias, keyFileName, apiClient, privateKeyString);
-            Logger.Trace($"Adding Private File {keyFileName}");
-            apiClient.AddCertificateFile(certKeyRequest);
+                var certKeyRequest =
+                    AddPrivateKey(ci, alias, keyFileName, apiClient, privateKeyString);
+                Logger.Trace($"certKeyRequest {JsonConvert.SerializeObject(certKeyRequest)}");
+                Logger.Trace($"Adding Private File {keyFileName}");
+                apiClient.AddCertificateFile(certKeyRequest);
+                Logger.Trace("Certificate File Added!");
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error in CertManager.ReplacePrivateKey {LogHandler.FlattenException(e)}");
+                throw;
+            }
         }
 
         private void ReplaceCertificateFile(AnyJobConfigInfo addConfig, CertStoreInfo ci, ApiClient apiClient,
             string certFileName, ViewPublicCertificatesResponse viewCertificateCollection, string alias, string certPem)
         {
-            //See if Certificate File Exists, if so remove it and add a new one, if not just add it
-            var certificateFileExists =
-                DoesCertificateFileExist(ci, apiClient, certFileName, viewCertificateCollection);
-            if (certificateFileExists)
-                RemoveCertificate(addConfig, ci, certFileName);
+            try
+            {
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                Logger.Trace($"Cert Store Info {JsonConvert.SerializeObject(ci)}");
+                Logger.Trace($"Cert Pem {certPem}");
+                Logger.Trace($"certFileName {certFileName}");
+                Logger.Trace($"alias {alias}");
 
-            Logger.Trace($"Adding Certificate File {certFileName}");
-            var certRequest = CertificateAddRequest(ci, alias, certFileName, apiClient, certPem);
-            apiClient.AddCertificateFile(certRequest);
+                //See if Certificate File Exists, if so remove it and add a new one, if not just add it
+                var certificateFileExists =
+                    DoesCertificateFileExist(ci, apiClient, certFileName, viewCertificateCollection);
+                if (certificateFileExists)
+                    RemoveCertificate(addConfig, ci, certFileName);
+
+                Logger.Trace($"Adding Certificate File {certFileName}");
+                var certRequest = CertificateAddRequest(ci, alias, certFileName, apiClient, certPem);
+                apiClient.AddCertificateFile(certRequest);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error in CertManager.ReplaceCertificateFile {LogHandler.FlattenException(e)}");
+                throw;
+            }
         }
 
         private void ReplaceCryptoKeyObject(CertStoreInfo ci, string cryptoKeyObjectName, ApiClient apiClient,
             string keyFileName,
             string alias)
         {
-            //Search to See if the Crypto *Key* Object Already Exists (If so, it needs disabled and updated, If not add a new one)
-            //Crypto Objects can not be removed since they may be already referenced by sites and such so they need disabled instead
-            var cryptoKeyExists =
-                DoesCryptoKeyObjectExist(ci, cryptoKeyObjectName, apiClient);
-            if (cryptoKeyExists)
+            try
             {
-                DisableCryptoKeyObject(cryptoKeyObjectName, apiClient);
-                UpdatePrivateKey(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+
+                Logger.Trace($"Cert Store Info {JsonConvert.SerializeObject(ci)}");
+                Logger.Trace($"Crypto Key Object Name {cryptoKeyObjectName}");
+                Logger.Trace($"keyFileName {keyFileName}");
+                Logger.Trace($"alias {alias}");
+
+                //Search to See if the Crypto *Key* Object Already Exists (If so, it needs disabled and updated, If not add a new one)
+                //Crypto Objects can not be removed since they may be already referenced by sites and such so they need disabled instead
+                var cryptoKeyExists =
+                    DoesCryptoKeyObjectExist(ci, cryptoKeyObjectName, apiClient);
+                Logger.Trace($"Crypto Object Exists equals {cryptoKeyExists}");
+
+                if (cryptoKeyExists)
+                {
+                    Logger.Trace("Disabling Crypto Key Object...");
+                    DisableCryptoKeyObject(cryptoKeyObjectName, apiClient);
+                    Logger.Trace("Updating Crypto Key Object...");
+                    UpdatePrivateKey(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
+                    Logger.Trace("Crypto Key Object Updated...");
+                }
+                else
+                {
+                    AddCryptoKey(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
+                }
+
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
-            else
+            catch (Exception e)
             {
-                AddCryptoKey(ci, cryptoKeyObjectName, apiClient, keyFileName, alias);
+                Logger.Error($"Error in CertManager.ReplaceCryptoKeyObject {LogHandler.FlattenException(e)}");
+                throw;
             }
         }
 
         private void ReplaceCryptoObject(CertStoreInfo ci, string cryptoCertObjectName, ApiClient apiClient,
             string certFileName, string alias)
         {
-            //Search to See if the Crypto *Certificate* Object Already Exists (If so, it needs disabled and updated, If not add a new one)
-            //Crypto Objects can not be removed since they may be already referenced by sites and such so they need disabled instead
-            var cryptoObjectExists =
-                DoesCryptoCertificateObjectExist(ci, cryptoCertObjectName, apiClient);
-            if (cryptoObjectExists)
+            try
             {
-                DisableCryptoCertificateObject(cryptoCertObjectName, apiClient);
-                UpdateCryptoCert(ci, cryptoCertObjectName, apiClient,
-                    certFileName, alias);
+                Logger.MethodEntry(ILogExtensions.MethodLogLevel.Debug);
+                //Search to See if the Crypto *Certificate* Object Already Exists (If so, it needs disabled and updated, If not add a new one)
+                //Crypto Objects can not be removed since they may be already referenced by sites and such so they need disabled instead
+
+                Logger.Trace($"Cert Store Info {JsonConvert.SerializeObject(ci)}");
+                Logger.Trace($"Crypto Object Name {cryptoCertObjectName}");
+                Logger.Trace($"certFileName {certFileName}");
+                Logger.Trace($"alias {alias}");
+
+                var cryptoObjectExists =
+                    DoesCryptoCertificateObjectExist(ci, cryptoCertObjectName, apiClient);
+
+                Logger.Trace($"Crypto Object Exists equals {cryptoObjectExists}");
+
+                if (cryptoObjectExists)
+                {
+                    Logger.Trace("Disabling Crypto Certificate Object...");
+                    DisableCryptoCertificateObject(cryptoCertObjectName, apiClient);
+                    Logger.Trace("Updating Crypto Certificate Object...");
+                    UpdateCryptoCert(ci, cryptoCertObjectName, apiClient,
+                        certFileName, alias);
+                    Logger.Trace("Disable and Update Complete..");
+                }
+                else
+                {
+                    Logger.Trace("Adding Crypto Certificate Object...");
+                    AddCryptoCert(ci, cryptoCertObjectName, apiClient, certFileName, alias);
+                }
+                Logger.MethodExit(ILogExtensions.MethodLogLevel.Debug);
             }
-            else
+            catch (Exception e)
             {
-                AddCryptoCert(ci, cryptoCertObjectName, apiClient, certFileName, alias);
+                Logger.Error($"Error in CertManager.ReplaceCryptoObject {LogHandler.FlattenException(e)}");
+                throw;
             }
         }
 
         public InventoryResult GetPublicCerts(ApiClient apiClient)
         {
-            var result = new InventoryResult();
-            var error = new AnyErrors { HasError = false };
+            try
+            {
+                var result = new InventoryResult();
+                var error = new AnyErrors { HasError = false };
 
-            Logger.Trace("GetPublicCerts");
-            var viewCert = new ViewPublicCertificatesRequest();
-            var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
+                Logger.Trace("GetPublicCerts");
+                var viewCert = new ViewPublicCertificatesRequest();
+                Logger.Trace($"Public Cert List Request {JsonConvert.SerializeObject(viewCert)}");
+                var viewCertificateCollection = apiClient.ViewPublicCertificates(viewCert);
+                Logger.Trace($"Public Cert List Response {JsonConvert.SerializeObject(viewCertificateCollection)}");
 
-            var intCount = 0;
-            char[] s = { ',' };
+                var intCount = 0;
+                char[] s = { ',' };
 
 
-            var intMax = Convert.ToInt32(_appConfig.AppSettings.Settings["MaxInventoryCapacity"].Value);
-            var blackList = _appConfig.AppSettings.Settings["InventoryBlackList"].Value.Split(s);
-            Logger.Trace("Got App Config Settings from File");
+                var intMax = Convert.ToInt32(_appConfig.AppSettings.Settings["MaxInventoryCapacity"].Value);
+                var blackList = _appConfig.AppSettings.Settings["InventoryBlackList"].Value.Split(s);
 
             var inventoryItems = new List<AgentCertStoreInventoryItem>();
             if (viewCertificateCollection.PubFileStoreLocation.PubFileStore?.PubFiles != null)
@@ -797,41 +979,54 @@ namespace DataPower
                     }
                 }
 
-            result.Errors = error;
-            result.InventoryList = inventoryItems;
-
-            return result;
+                result.Errors = error;
+                result.InventoryList = inventoryItems;
+                Logger.Trace($"Serialized Result: {JsonConvert.SerializeObject(result)}");
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error in CertManager.GetPublicCerts {LogHandler.FlattenException(e)}");
+                throw;
+            }
         }
 
         public InventoryResult GetCerts(ApiClient apiClient)
         {
-            var result = new InventoryResult();
-            var error = new AnyErrors { HasError = false };
+            try
+            {
+                var result = new InventoryResult();
+                var error = new AnyErrors { HasError = false };
 
-            Logger.Trace("GetCerts");
-            var viewCert = new ViewCryptoCertificatesRequest(apiClient.Domain);
-            var viewCertificateCollection = apiClient.ViewCertificates(viewCert);
+                Logger.Trace("GetCerts");
+                var viewCert = new ViewCryptoCertificatesRequest(apiClient.Domain);
+                Logger.Trace($"Get Certs Request: {JsonConvert.SerializeObject(viewCert)}");
+                var viewCertificateCollection = apiClient.ViewCertificates(viewCert);
+                Logger.Trace($"Get Certs Response: {JsonConvert.SerializeObject(viewCertificateCollection)}");
+                var inventoryItems = new List<AgentCertStoreInventoryItem>();
 
-            var inventoryItems = new List<AgentCertStoreInventoryItem>();
+                Logger.Trace("Start loop");
 
-            Logger.Trace("Start loop");
-
-            foreach (var cc in viewCertificateCollection.CryptoCertificates)
-                if (!string.IsNullOrEmpty(cc.Name))
-                {
-                    Logger.Trace($"Looping through Certificate Store files: {cc.Name}");
-
-                    try
+                foreach (var cc in viewCertificateCollection.CryptoCertificates)
+                    if (!string.IsNullOrEmpty(cc.Name))
                     {
-                        var viewCertDetail = new ViewCertificateDetailRequest(apiClient.Domain)
-                        {
-                            CertObjectRequest = new CertificateObjectRequest
-                            {
-                                ObjectName = cc.Name
-                            }
-                        };
+                        Logger.Trace($"Looping through Certificate Store files: {cc.Name}");
 
-                        var viewCertResponse = apiClient.ViewCryptoCertificate(viewCertDetail);
+                        try
+                        {
+                            var viewCertDetail = new ViewCertificateDetailRequest(apiClient.Domain)
+                            {
+                                CertObjectRequest = new CertificateObjectRequest
+                                {
+                                    ObjectName = cc.Name
+                                }
+                            };
+                            Logger.Trace($"Get Cert Request: {JsonConvert.SerializeObject(viewCertDetail)}");
+                            var viewCertResponse = apiClient.ViewCryptoCertificate(viewCertDetail);
+                            Logger.Trace($"Get Cert Response: {JsonConvert.SerializeObject(viewCertResponse)}");
+
+                            //check this is a valid cert, if not fall to the errors
+                            var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject.CertDetailsObject.EncodedCert.Value));
 
                         //check this is a valid cert, if not fall to the errors
                         var cert = new X509Certificate2(Encoding.UTF8.GetBytes(viewCertResponse.CryptoCertObject
@@ -850,19 +1045,18 @@ namespace DataPower
                                     UseChainLevel = true
                                 });
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.Error($"Certificate not retrievable: Error on {cc.Name}: {ex.Message}");
-                        error.ErrorMessage = ex.Message;
-                        error.HasError = true;
-                    }
-                }
 
 
-            result.Errors = error;
-            result.InventoryList = inventoryItems;
-
-            return result;
+                result.Errors = error;
+                result.InventoryList = inventoryItems;
+                Logger.Trace($"Serialized Result: {JsonConvert.SerializeObject(result)}");
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Error in CertManager.GetCerts {LogHandler.FlattenException(e)}");
+                throw;
+            }
         }
     }
 }

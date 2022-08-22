@@ -20,6 +20,7 @@ using DataPower.API.client;
 using Keyfactor.Platform.Extensions.Agents;
 using Keyfactor.Platform.Extensions.Agents.Delegates;
 using Keyfactor.Platform.Extensions.Agents.Interfaces;
+using Newtonsoft.Json;
 
 namespace DataPower
 {
@@ -53,25 +54,26 @@ namespace DataPower
             Logger.Trace("Parse: Certificate Inventory: " + config.Store.StorePath);
             var ci = Utility.ParseCertificateConfig(config);
             Logger.Trace($"Certificate Config Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
-
+            Logger.Trace($"Any Job Config {JsonConvert.SerializeObject(config)}");
+            Logger.Trace($"submitEnrollmentRequest {JsonConvert.SerializeObject(submitEnrollmentRequest)}");
             Logger.Trace("Entering IBM DataPower: Certificate Inventory");
             Logger.Trace($"Entering processJob for Domain: {ci.Domain} and Certificate Store: {ci.CertificateStore}");
             var apiClient = new ApiClient(config.Server.Username, config.Server.Password,
                 $"{_protocol}://" + config.Store.ClientMachine.Trim(), ci.Domain);
 
-            var publicCertStoreName= _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
+            var publicCertStoreName = _appConfig.AppSettings.Settings["PublicCertStoreName"].Value;
             Logger.Trace($"$Public Store name is {publicCertStoreName}");
 
             var storePath = config.Store.StorePath; var inventoryResult = storePath.Contains(_appConfig.AppSettings.Settings["PublicCertStoreName"].Value)
                 ? _certManager.GetPublicCerts(apiClient)
                 : _certManager.GetCerts(apiClient);
 
-            var returnVal=submitInventory.Invoke(inventoryResult.InventoryList);
+            var returnVal = submitInventory.Invoke(inventoryResult.InventoryList);
 
             if (returnVal == false)
             {
                 Logger.Error("There were issues submitting the inventory.");
-                return new AnyJobCompleteInfo { Status = (int)JobStatuses.JobError, Message = "Error submitting the inventory to Keyfactor"};
+                return new AnyJobCompleteInfo { Status = (int)JobStatuses.JobError, Message = "Error submitting the inventory to Keyfactor" };
             }
 
             if (inventoryResult.Errors.HasError)
@@ -81,7 +83,7 @@ namespace DataPower
             }
 
             //we want to inventory what we can an log the rest as errors
-            return new AnyJobCompleteInfo {Status = (int)JobStatuses.JobSuccess, Message = "Inventory Complete"};
+            return new AnyJobCompleteInfo { Status = (int)JobStatuses.JobSuccess, Message = "Inventory Complete" };
         }
     }
 }
