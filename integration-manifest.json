@@ -3,8 +3,8 @@
     "integration_type": "windows-orchestrator",
     "name": "IBM Datapower",
     "status": "production",
-    "update_catalog": true,
     "link_github": true,
+    "update_catalog": true,
     "support_level": "kf-supported",
     "description": "The IBM DataPower Orchestrator allows for the management of certificates in the IBM Datapower platform. Inventory and Management functions are supported."
 }
